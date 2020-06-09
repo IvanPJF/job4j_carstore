@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add new advert</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+            integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+            crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+            integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+            crossorigin="anonymous"></script>
+
+
+    <script>
+        $(function () {
+            initManufacturers();
+        });
+
+        function initManufacturers() {
+            $.ajax({
+                url: "../ajax/car-description",
+                type: "GET",
+                data: {
+                    "action": "getManufacturers"
+                }
+            }).done(function (data) {
+                addOptionsToSelect($("#manufacturer"), JSON.parse(data));
+            });
+        }
+
+        function changeManufacturer() {
+            let divModel = $("#divModel");
+            hideElements([divModel, $("#divBodyType")]);
+            clearSelectors([$("#model"), $("#body_type")]);
+            let currManufId = $("#manufacturer").val();
+            if (currManufId) {
+                $.ajax({
+                    url: "../ajax/car-description",
+                    type: "GET",
+                    data: {
+                        "action": "getModels",
+                        "manufacturer": JSON.stringify({
+                            "id": currManufId
+                        })
+                    }
+                }).done(function (data) {
+                    addOptionsToSelect($("#model"), JSON.parse(data));
+                    divModel.removeAttr("hidden");
+                });
+            }
+        }
+
+        function changeModel() {
+            let divBodyType = $("#divBodyType");
+            hideElements([divBodyType]);
+            clearSelectors([$("#body_type")]);
+            let currModelId = $("#model").val();
+            if (currModelId) {
+                $.ajax({
+                    url: "../ajax/car-description",
+                    type: "GET",
+                    data: {
+                        "action": "getBodyTypes",
+                        "model": JSON.stringify({
+                            "id": currModelId
+                        })
+                    }
+                }).done(function (data) {
+                    addOptionsToSelect($("#body_type"), JSON.parse(data));
+                    divBodyType.removeAttr("hidden");
+                });
+            }
+        }
+
+        function hideElements(elements) {
+            elements.forEach(function (element, index, array) {
+                element.attr("hidden", true);
+            });
+        }
+
+        function clearSelectors(selectors) {
+            selectors.forEach(function (element, index, array) {
+                element.html("");
+            });
+        }
+
+        function addOptionsToSelect(targetSelector, elements) {
+            targetSelector.html(function () {
+                let htmlOptions = `<option value="">Select from the list ...</option>`;
+                for (let element of elements) {
+                    htmlOptions = `${htmlOptions}<option value="${element.id}">${element.name}</option>`;
+                }
+                return htmlOptions;
+            });
+        }
+
+        function currentAdvertiser() {
+            let result = null;
+            $.ajax({
+                url: "../ajax/advertiser",
+                type: "GET",
+                async: false
+            }).done(function (data) {
+                result = JSON.parse(data);
+            });
+            return result;
+        }
+
+        function addAdvert() {
+            if (validate()) {
+                let advertiser = currentAdvertiser();
+                let formData = new FormData();
+                let file = $("#file");
+                if (file.val()) {
+                    formData.append("file", file[0].files[0]);
+                }
+                formData.append("advert", JSON.stringify({
+                    "vin": $("#vin").val(),
+                    "mileage": $("#mileage").val(),
+                    "price": $("#price").val(),
+                    "status": true,
+                    "model": {
+                        "id": $("#model").val()
+                    },
+                    "bodyType": {
+                        "id": $("#body_type").val()
+                    },
+                    "advertiser": {
+                        "id": advertiser.id
+                    }
+                }));
+                $.ajax({
+                    url: "add-advert",
+                    type: "POST",
+                    data: formData,
+                    contentType: false,
+                    processData: false
+                }).done(function (data) {
+                    alert("Done");
+                }).fail(function (error) {
+                    alert("Fail");
+                });
+            }
+        }
+
+        function toMain() {
+            window.location.href = "/carstore";
+        }
+
+        function validate() {
+            let inputs = $(":input:not(:button):not(:file)");
+            for (let input of inputs) {
+                if (!input.value) {
+                    alert(`Enter '${input.title}'`);
+                    return false;
+                }
+            }
+            return true;
+        }
+    </script>
+</head>
+<body>
+<div class="container">
+    <div class="row pt-5 justify-content-center">
+        <h2>Adding a new ad</h2>
+    </div>
+    <div class="row pt-3 justify-content-center">
+        <div class="col-4">
+            <form>
+                <div class="form-group row">
+                    <label for="vin">VIN</label>
+                    <input type="text" class="form-control" id="vin" title="vin" placeholder="Введите VIN">
+                </div>
+                <div class="form-group row">
+                    <label for="mileage">Mileage</label>
+                    <input type="text" class="form-control" id="mileage" title="mileage" placeholder="Введите пробег">
+                </div>
+                <div class="form-group row">
+                    <label for="price">Price</label>
+                    <input type="text" class="form-control" id="price" title="price" placeholder="Введите цену">
+                </div>
+                <div class="form-group row" id="divManufacturer">
+                    <label for="manufacturer">Manufacturer</label>
+                    <select class="form-control" id="manufacturer" title="manufacturer"
+                            onchange="changeManufacturer();"></select>
+                </div>
+                <div class="form-group row" id="divModel" hidden>
+                    <label for="model">Model</label>
+                    <select class="form-control" id="model" title="model" onchange="changeModel();"></select>
+                </div>
+                <div class="form-group row" id="divBodyType" hidden>
+                    <label for="body_type">Body type</label>
+                    <select class="form-control" id="body_type" title="body_type"></select>
+                </div>
+                <div class="form-group row">
+                    <label for="file">Photo</label>
+                    <input type="file" class="form-control-file" id="file" accept="image/*">
+                </div>
+            </form>
+            <div class="row">
+                <div class="col">
+                    <button type="button" class="btn btn-default btn-block" id="btnCancel" onclick="toMain();">
+                        Cancel
+                    </button>
+                </div>
+                <div class="col">
+                    <button type="button" class="btn btn-success btn-block" id="btnSave" onclick="addAdvert();">
+                        Save
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

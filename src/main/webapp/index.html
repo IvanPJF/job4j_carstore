@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Adverts</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+            integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+            crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+            integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+            crossorigin="anonymous"></script>
+    <script>
+        $(function () {
+            currentAdvertiser();
+            initAdverts();
+        });
+
+        function currentAdvertiser() {
+            $.ajax({
+                url: "ajax/advertiser",
+                type: "GET"
+            }).done(function (data) {
+                $("#currAdvertiser").html(function () {
+                    let out = "Welcome: ";
+                    if (data) {
+                        return `${out}<a href="auth/profile"><b>${JSON.parse(data).name}</b></a> [<a href="signout">sign out</a>]`;
+                    }
+                    return `${out}guest [<a href="signin"><b>sign in</b></a>]`;
+                });
+            });
+        }
+
+        function initAdverts() {
+            $.ajax({
+                url: "ajax/advert",
+                type: "GET"
+            }).done(function (data) {
+                let adverts = JSON.parse(data);
+                $("#tbody").html(function () {
+                    let body = "";
+                    for (let advert of adverts) {
+                        body = advertToTableRow(body, advert);
+                    }
+                    return body;
+                });
+            }).fail(function (error) {
+                alert("Failed in load adverts");
+            });
+        }
+
+        function advertToTableRow(body, advert) {
+            let id = advert.id;
+            return `${body}`
+                + `<tr>`
+                + `<input type="hidden" id="${id}"/>`
+                + `<td><img src="images/file?name=${advert.photoName}" class="img-fluid img-thumbnail" alt="Photo ${id}"></td>`
+                + `<td>${advertDescription(advert)}</td>`
+                + `</tr>`;
+        }
+
+        function advertDescription(advert) {
+            return `<table class="table table-sm">`
+                + `<tr><th scope="col" style="width: 40%"></th><th scope="col" style="width: 60%"></th></tr>`
+                + `<tr><th scope="row">Price:</th><td>${advert.price}</td></tr>`
+                + `<tr><th scope="row">VIN:</th><td>${advert.vin}</td></tr>`
+                + `<tr><th scope="row">Mileage:</th><td>${advert.mileage}</td></tr>`
+                + `<tr><th scope="row">Model:</th><td>${advert.model.name}</td></tr>`
+                + `<tr><th scope="row">Body type:</th><td>${advert.bodyType.name}</td></tr>`
+                + `<tr><th scope="row">Advertiser:</th><td>${advert.advertiser.name}</td></tr>`
+                + `<tr><th scope="row">Phone:</th><td>${advert.advertiser.phone}</td></tr>`
+                + `</table>`;
+        }
+
+        function toAddAdvert() {
+            window.location.href = "auth/add-advert";
+        }
+    </script>
+
+</head>
+<body>
+<div class="container">
+    <div class="row justify-content-end pt-3">
+        <div class="col text-right" id="currAdvertiser"></div>
+    </div>
+    <div class="row justify-content-end pt-3">
+        <div class="col text-right">
+            <button class="btn btn-success" onclick="toAddAdvert();">Add new advert</button>
+        </div>
+    </div>
+    <div class="row justify-content-center pt-3">
+        <div class="col text-center">
+            <h3>Adverts list</h3>
+        </div>
+    </div>
+    <div class="table-responsive table-bordered">
+        <table class="table" id="table" style="word-break: break-all">
+            <thead class="thead-light">
+            <tr>
+                <th style="width: 30%">Photo</th>
+                <th style="width: 70%">Description</th>
+            </tr>
+            </thead>
+            <tbody id="tbody"></tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>
