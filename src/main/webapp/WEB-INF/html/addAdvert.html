@@ -28,50 +28,38 @@
                     "action": "getManufacturers"
                 }
             }).done(function (data) {
-                fillOptions(JSON.parse(data));
-                let manufacturerSelector = $("#manufacturer");
-                manufacturerSelector.change(function () {
+                let manufSelector = $("#manufacturer");
+                addOptions(manufSelector, JSON.parse(data));
+                manufSelector.change(function () {
                     let divModel = $("#divModel");
                     let divBodyType = $("#divBodyType");
-                    if (manufacturerSelector.val()) {
+                    let currManufId = manufSelector.val();
+                    // let currManufId = $("#manufacturer").val();
+                    if (currManufId) {
                         $.ajax({
                             url: "car-description",
                             type: "GET",
                             data: {
                                 "action": "getModels",
-                                "idManufacturer": manufacturerSelector.val()
+                                "idManufacturer": currManufId
                             }
                         }).done(function (data) {
                             let models = JSON.parse(data);
                             let modelSelector = $("#model");
-                            modelSelector.html(function () {
-                                let htmlOptions = `<option value="">Выберите из списка...</option>`;
-                                for (let model of models) {
-                                    htmlOptions = `${htmlOptions}<option value="${model.id}">${model.name}</option>`;
-                                }
-                                return htmlOptions;
-                            });
+                            addOptions(modelSelector, models);
                             divModel.removeAttr("hidden");
                             modelSelector.change(function () {
-                                let currModelId = $("#model").val();
+                                let currModelId = modelSelector.val();
+                                // let currModelId = $("#model").val();
                                 if (currModelId) {
-                                    let bodyTypeSelector = $("#body_type");
-                                    bodyTypeSelector.html(function () {
-                                        let pickModel = "";
-                                        for (let model of models) {
-                                            if (currModelId === `${model.id}`) {
-                                                pickModel = model;
-                                                break;
-                                            }
+                                    let pickModel = "";
+                                    for (let model of models) {
+                                        if (currModelId === `${model.id}`) {
+                                            pickModel = model;
+                                            break;
                                         }
-                                        let htmlOptions = `<option value="">Выберите из списка...</option>`;
-                                        if (pickModel) {
-                                            for (let bodyType of pickModel.bodyTypes) {
-                                                htmlOptions = `${htmlOptions}<option value="${bodyType.id}">${bodyType.name}</option>`;
-                                            }
-                                        }
-                                        return htmlOptions;
-                                    });
+                                    }
+                                    addOptions($("#body_type"), pickModel.bodyTypes);
                                     divBodyType.removeAttr("hidden");
                                 } else {
                                     divBodyType.attr("hidden", true);
@@ -86,11 +74,56 @@
             });
         }
 
-        function fillOptions(elements) {
-            $("#manufacturer").html(function () {
+
+        function changeManufacturer() {
+            let divModel = $("#divModel");
+            let divBodyType = $("#divBodyType");
+            let currManufId = $("#manufacturer").val();
+            if (currManufId) {
+                $.ajax({
+                    url: "car-description",
+                    type: "GET",
+                    data: {
+                        "action": "getModels",
+                        "idManufacturer": currManufId
+                    }
+                }).done(function (data) {
+                    let models = JSON.parse(data);
+                    let modelSelector = $("#model");
+                    addOptions(modelSelector, models);
+                    divModel.removeAttr("hidden");
+                });
+            } else {
+                divBodyType.attr("hidden", true);
+                divModel.attr("hidden", true);
+            }
+        }
+
+
+        function changeModel() {
+            let currModelId = modelSelector.val();
+            // let currModelId = $("#model").val();
+            if (currModelId) {
+                let pickModel = "";
+                for (let model of models) {
+                    if (currModelId === `${model.id}`) {
+                        pickModel = model;
+                        break;
+                    }
+                }
+                addOptions($("#body_type"), pickModel.bodyTypes);
+                divBodyType.removeAttr("hidden");
+            } else {
+                divBodyType.attr("hidden", true);
+            }
+        }
+
+
+        function addOptions(targetSelector, elements) {
+            targetSelector.html(function () {
                 let htmlOptions = `<option value="">Выберите из списка...</option>`;
-                for (let manufacturer of elements) {
-                    htmlOptions = `${htmlOptions}<option value="${manufacturer.id}">${manufacturer.name}</option>`;
+                for (let element of elements) {
+                    htmlOptions = `${htmlOptions}<option value="${element.id}">${element.name}</option>`;
                 }
                 return htmlOptions;
             });
@@ -170,7 +203,6 @@
             </form>
         </div>
     </div>
-    <div class="row pt-3" id="outPick"></div>
 </div>
 </body>
 </html>
