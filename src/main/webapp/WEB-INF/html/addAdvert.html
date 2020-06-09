@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add new advert</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+            integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+            crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+            integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+            crossorigin="anonymous"></script>
+
+
+    <script>
+        $(function () {
+            loadCarsManufacturers();
+        });
+
+        function loadCarsManufacturers() {
+            $.ajax({
+                url: "car-description",
+                type: "GET",
+                data: {
+                    "action": "getManufacturers"
+                }
+            }).done(function (data) {
+                fillOptions(JSON.parse(data));
+                let manufacturerSelector = $("#manufacturer");
+                manufacturerSelector.change(function () {
+                    let divModel = $("#divModel");
+                    let divBodyType = $("#divBodyType");
+                    if (manufacturerSelector.val()) {
+                        $.ajax({
+                            url: "car-description",
+                            type: "GET",
+                            data: {
+                                "action": "getModels",
+                                "idManufacturer": manufacturerSelector.val()
+                            }
+                        }).done(function (data) {
+                            let models = JSON.parse(data);
+                            let modelSelector = $("#model");
+                            modelSelector.html(function () {
+                                let htmlOptions = `<option value="">Выберите из списка...</option>`;
+                                for (let model of models) {
+                                    htmlOptions = `${htmlOptions}<option value="${model.id}">${model.name}</option>`;
+                                }
+                                return htmlOptions;
+                            });
+                            divModel.removeAttr("hidden");
+                            modelSelector.change(function () {
+                                let currModelId = $("#model").val();
+                                if (currModelId) {
+                                    let bodyTypeSelector = $("#body_type");
+                                    bodyTypeSelector.html(function () {
+                                        let pickModel = "";
+                                        for (let model of models) {
+                                            if (currModelId === `${model.id}`) {
+                                                pickModel = model;
+                                                break;
+                                            }
+                                        }
+                                        let htmlOptions = `<option value="">Выберите из списка...</option>`;
+                                        if (pickModel) {
+                                            for (let bodyType of pickModel.bodyTypes) {
+                                                htmlOptions = `${htmlOptions}<option value="${bodyType.id}">${bodyType.name}</option>`;
+                                            }
+                                        }
+                                        return htmlOptions;
+                                    });
+                                    divBodyType.removeAttr("hidden");
+                                } else {
+                                    divBodyType.attr("hidden", true);
+                                }
+                            });
+                        });
+                    } else {
+                        divBodyType.attr("hidden", true);
+                        divModel.attr("hidden", true);
+                    }
+                });
+            });
+        }
+
+        function fillOptions(elements) {
+            $("#manufacturer").html(function () {
+                let htmlOptions = `<option value="">Выберите из списка...</option>`;
+                for (let manufacturer of elements) {
+                    htmlOptions = `${htmlOptions}<option value="${manufacturer.id}">${manufacturer.name}</option>`;
+                }
+                return htmlOptions;
+            });
+        }
+
+        function addAdvert() {
+            $.ajax({
+                url: "advert",
+                type: "POST",
+                data: {
+                    "action": "add",
+                    "advert": JSON.stringify({
+                        "vin": $("#vin").val(),
+                        "mileage": $("#mileage").val(),
+                        "price": $("#price").val(),
+                        "model": $("#model").val(),
+                        "body_type": $("#body_type").val()
+                    })
+                }
+            }).done(function (data) {
+
+            });
+        }
+
+        function validate() {
+            $(":text").forEach(function (value, index, array) {
+                if (!value.value()) {
+                    alert(`Enter '${value.title}'`);
+                    return false;
+                }
+            });
+            return true;
+        }
+    </script>
+</head>
+<body>
+<div class="container">
+    <div class="row pt-5 justify-content-center">
+        <h2>Добавление нового объявления</h2>
+    </div>
+    <div class="row pt-3 justify-content-center">
+        <div class="col-4">
+            <form>
+                <div class="form-group row">
+                    <label for="vin">VIN</label>
+                    <input type="text" class="form-control" id="vin" title="vin" placeholder="Введите VIN">
+                </div>
+                <div class="form-group row">
+                    <label for="mileage">Пробег</label>
+                    <input type="text" class="form-control" id="mileage" title="mileage" placeholder="Введите пробег">
+                </div>
+                <div class="form-group row">
+                    <label for="price">Цена</label>
+                    <input type="text" class="form-control" id="price" title="price" placeholder="Введите цену">
+                </div>
+                <div class="form-group row" id="divManufacturer">
+                    <label for="manufacturer">Производитель</label>
+                    <select class="form-control" id="manufacturer" title="manufacturer">
+
+                    </select>
+                </div>
+                <div class="form-group row" id="divModel" hidden>
+                    <label for="model">Модель</label>
+                    <select class="form-control" id="model" title="model">
+                        <option value="">Выберите модель...</option>
+                    </select>
+                </div>
+                <div class="form-group row" id="divBodyType" hidden>
+                    <label for="body_type">Тип корпуса</label>
+                    <select class="form-control" id="body_type" title="body_type">
+                        <option value="">Выберите тип корпуса...</option>
+                    </select>
+                </div>
+                <div class="row">
+                    <button type="button" class="btn btn-success btn-block" id="btnSave">Сохранить</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="row pt-3" id="outPick"></div>
+</div>
+</body>
+</html>

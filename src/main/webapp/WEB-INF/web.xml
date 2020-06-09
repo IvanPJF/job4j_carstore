@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<web-app xmlns="http://java.sun.com/xml/ns/j2ee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee
+         http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
+         version="2.4">
+
+    <servlet>
+        <servlet-name>AdvertiserServlet</servlet-name>
+        <servlet-class>ru.job4j.controller.AdvertiserServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>AdvertiserServlet</servlet-name>
+        <url-pattern>/advertiser</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>AdvertServlet</servlet-name>
+        <servlet-class>ru.job4j.controller.AdvertServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>AdvertServlet</servlet-name>
+        <url-pattern>/advert</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>CarDescriptionServlet</servlet-name>
+        <servlet-class>ru.job4j.controller.CarDescriptionServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>CarDescriptionServlet</servlet-name>
+        <url-pattern>/car-description</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>AddAdvertServlet</servlet-name>
+        <servlet-class>ru.job4j.controller.AddAdvertServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>AddAdvertServlet</servlet-name>
+        <url-pattern>/add-advert</url-pattern>
+    </servlet-mapping>
+</web-app>
