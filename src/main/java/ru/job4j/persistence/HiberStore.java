@@ -6,10 +6,12 @@ import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import ru.job4j.model.Advert;
+import ru.job4j.model.BodyType;
 import ru.job4j.model.Manufacturer;
 import ru.job4j.model.Model;
 
 import java.util.Collection;
+import java.util.Set;
 import java.util.function.Function;
 
 public class HiberStore implements Store {
@@ -40,10 +42,15 @@ public class HiberStore implements Store {
     }
 
     @Override
-    public Collection<Model> findModelsByIdManufacturer(Integer idManufacturer) {
+    public Collection<Model> findModels(Manufacturer manufacturer) {
         return execute(session -> session.createQuery("from Model where manufacturer.id = :idManufacturer order by name", Model.class)
-                .setParameter("idManufacturer", idManufacturer)
+                .setParameter("idManufacturer", manufacturer.getId())
                 .list());
+    }
+
+    @Override
+    public Collection<BodyType> findBodyTypes(Model model) {
+        return execute(session -> session.get(Model.class, model.getId()).getBodyTypes());
     }
 
     private <T> T execute(Function<Session, T> function) {

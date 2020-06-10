@@ -32,7 +32,7 @@ public class Advert implements Comparable<Advert> {
             nullable = false,
             updatable = false
     )
-    private Manufacturer model;
+    private Model model;
 
     @ManyToOne(cascade = {CascadeType.REFRESH}, fetch = FetchType.EAGER)
     @JoinColumn(
@@ -111,11 +111,11 @@ public class Advert implements Comparable<Advert> {
         this.advertiser = advertiser;
     }
 
-    public Manufacturer getModel() {
+    public Model getModel() {
         return model;
     }
 
-    public void setModel(Manufacturer model) {
+    public void setModel(Model model) {
         this.model = model;
     }
 

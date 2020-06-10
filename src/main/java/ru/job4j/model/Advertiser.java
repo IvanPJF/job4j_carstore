@@ -1,5 +1,7 @@
 package ru.job4j.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.Set;
 import java.util.TreeSet;
@@ -19,6 +21,7 @@ public class Advertiser {
     @Column(name = "phone", nullable = false)
     private Long phone;
 
+    @JsonIgnore
     @OneToMany(cascade = {CascadeType.REFRESH}, fetch = FetchType.EAGER, mappedBy = "advertiser")
     private Set<Advert> adverts = new TreeSet<>();
 

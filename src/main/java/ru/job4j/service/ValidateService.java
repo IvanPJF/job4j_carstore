@@ -1,6 +1,7 @@
 package ru.job4j.service;
 
 import ru.job4j.model.Advert;
+import ru.job4j.model.BodyType;
 import ru.job4j.model.Manufacturer;
 import ru.job4j.model.Model;
 import ru.job4j.persistence.HiberStore;
@@ -36,7 +37,12 @@ public class ValidateService implements Service {
     }
 
     @Override
-    public Collection<Model> findModelsByIdManufacturer(Integer idManufacturer) {
-        return STORE.findModelsByIdManufacturer(idManufacturer);
+    public Collection<Model> findModels(Manufacturer manufacturer) {
+        return STORE.findModels(manufacturer);
+    }
+
+    @Override
+    public Collection<BodyType> findBodyTypes(Model model) {
+        return STORE.findBodyTypes(model);
     }
 }

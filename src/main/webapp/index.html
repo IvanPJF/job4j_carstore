@@ -38,19 +38,22 @@
             let id = advert.id;
             return `${body}`
                 + `<tr>`
-                + `<td><input type="hidden" id="${id}"></td>`
+                + `<input type="hidden" id="${id}">`
                 + `<td>Photo ${id}</td>`
                 + `<td>${advertDescription(advert)}</td>`
                 + `</tr>`;
         }
 
         function advertDescription(advert) {
-            return `<table>`
-                + `<tr><td>${advert.price}</td></tr>`
-                + `<tr><td>${advert.vin}</td></tr>`
-                + `<tr><td>${advert.mileage}</td></tr>`
-                + `<tr><td>${advert.model.name}</td></tr>`
-                + `<tr><td>${advert.bodyType.name}</td></tr>`
+            return `<table class="table table-sm">`
+                + `<tr><th scope="col" style="width: 40%"></th><th scope="col" style="width: 60%"></th></tr>`
+                + `<tr><th scope="row">Price:</th><td>${advert.price}</td></tr>`
+                + `<tr><th scope="row">VIN:</th><td>${advert.vin}</td></tr>`
+                + `<tr><th scope="row">Mileage:</th><td>${advert.mileage}</td></tr>`
+                + `<tr><th scope="row">Model:</th><td>${advert.model.name}</td></tr>`
+                + `<tr><th scope="row">Body type:</th><td>${advert.bodyType.name}</td></tr>`
+                + `<tr><th scope="row">Advertiser:</th><td>${advert.advertiser.name}</td></tr>`
+                + `<tr><th scope="row">Phone:</th><td>${advert.advertiser.phone}</td></tr>`
                 + `</table>`;
         }
 
@@ -67,7 +70,7 @@
             <button class="btn btn-success" onclick="toAddAdvert();">Add new advert</button>
         </div>
     </div>
-    <div class="row justify-content-end pt-3">
+    <div class="row justify-content-center pt-3">
         <div class="col-4 text-center">
             <h3>Task list</h3>
         </div>
@@ -76,8 +79,8 @@
         <table class="table" id="table" style="word-break: break-all">
             <thead class="thead-light">
             <tr>
-                <th style="width: 30%">Photo</th>
-                <th style="width: 70%">Description</th>
+                <th style="width: 50%">Photo</th>
+                <th style="width: 50%">Description</th>
             </tr>
             </thead>
             <tbody id="tbody"></tbody>

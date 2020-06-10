@@ -6,13 +6,6 @@ CREATE TABLE IF NOT EXISTS advertiser
     PRIMARY KEY (id)
 );
 
-CREATE TABLE IF NOT EXISTS body_type
-(
-    id   SERIAL,
-    name VARCHAR(100) NOT NULL UNIQUE,
-    PRIMARY KEY (id)
-);
-
 CREATE TABLE IF NOT EXISTS manufacturer
 (
     id   SERIAL,
@@ -27,6 +20,22 @@ CREATE TABLE IF NOT EXISTS model
     manufacturer_id INTEGER      NOT NULL,
     PRIMARY KEY (id),
     FOREIGN KEY (manufacturer_id) REFERENCES manufacturer (id)
+);
+
+CREATE TABLE IF NOT EXISTS body_type
+(
+    id   SERIAL,
+    name VARCHAR(100) NOT NULL UNIQUE,
+    PRIMARY KEY (id)
+);
+
+CREATE TABLE IF NOT EXISTS model_body_type
+(
+    model_id     INTEGER NOT NULL,
+    body_type_id INTEGER NOT NULL,
+    PRIMARY KEY (model_id, body_type_id),
+    FOREIGN KEY (model_id) REFERENCES model (id),
+    FOREIGN KEY (body_type_id) REFERENCES body_type (id)
 );
 
 CREATE TABLE IF NOT EXISTS advert
@@ -44,15 +53,6 @@ CREATE TABLE IF NOT EXISTS advert
     FOREIGN KEY (model_id) REFERENCES model (id),
     FOREIGN KEY (body_type_id) REFERENCES body_type (id),
     FOREIGN KEY (advertiser_id) REFERENCES advertiser (id)
-);
-
-CREATE TABLE IF NOT EXISTS model_body_type
-(
-    model_id     INTEGER NOT NULL,
-    body_type_id INTEGER NOT NULL,
-    PRIMARY KEY (model_id, body_type_id),
-    FOREIGN KEY (model_id) REFERENCES model (id),
-    FOREIGN KEY (body_type_id) REFERENCES body_type (id)
 );
 
 INSERT INTO manufacturer (name)
@@ -79,3 +79,6 @@ VALUES (1, 1),
        (2, 3),
        (3, 3),
        (3, 4);
+
+INSERT INTO advertiser (name, phone)
+VALUES ('Ivan', 8900);

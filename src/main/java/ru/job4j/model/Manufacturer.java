@@ -19,7 +19,7 @@ public class Manufacturer {
     private String name;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "manufacturer", cascade = {CascadeType.REFRESH}, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "manufacturer", cascade = {CascadeType.REFRESH}, fetch = FetchType.LAZY)
     private Set<Model> models = new TreeSet<>();
 
     public Integer getId() {
