@@ -5,12 +5,10 @@ import org.hibernate.SessionFactory;
 import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
-import ru.job4j.model.Advert;
-import ru.job4j.model.BodyType;
-import ru.job4j.model.Manufacturer;
-import ru.job4j.model.Model;
+import ru.job4j.model.*;
 
 import java.util.Collection;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
 
@@ -51,6 +49,23 @@ public class HiberStore implements Store {
     @Override
     public Collection<BodyType> findBodyTypes(Model model) {
         return execute(session -> session.get(Model.class, model.getId()).getBodyTypes());
+    }
+
+    @Override
+    public boolean isCredential(RegAdvertiser regAdvertiser) {
+        return execute(session -> Objects.nonNull(session.createQuery("from RegAdvertiser where login = :login and password = :password", RegAdvertiser.class)
+                .setParameter("login", regAdvertiser.getLogin())
+                .setParameter("password", regAdvertiser.getPassword())
+                .uniqueResult())
+        );
+    }
+
+    @Override
+    public Advertiser findAdvertiserByLogin(RegAdvertiser regAdvertiser) {
+        return execute(session -> session.createQuery("from RegAdvertiser where login = :login", RegAdvertiser.class)
+                .setParameter("login", regAdvertiser.getLogin())
+                .uniqueResult()
+                .getAdvertiser());
     }
 
     private <T> T execute(Function<Session, T> function) {

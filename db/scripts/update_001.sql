@@ -6,6 +6,16 @@ CREATE TABLE IF NOT EXISTS advertiser
     PRIMARY KEY (id)
 );
 
+CREATE TABLE IF NOT EXISTS reg_advertiser
+(
+    id            SERIAL,
+    login         VARCHAR(100) NOT NULL UNIQUE,
+    password      VARCHAR(100) NOT NULL,
+    advertiser_id INTEGER      NOT NULL UNIQUE,
+    PRIMARY KEY (id),
+    FOREIGN KEY (advertiser_id) REFERENCES advertiser (id)
+);
+
 CREATE TABLE IF NOT EXISTS manufacturer
 (
     id   SERIAL,
@@ -82,3 +92,7 @@ VALUES (1, 1),
 
 INSERT INTO advertiser (name, phone)
 VALUES ('Ivan', 8900);
+
+INSERT INTO reg_advertiser(login, password, advertiser_id)
+VALUES ('admin', 'admin', 1);
+

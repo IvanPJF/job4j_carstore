@@ -43,11 +43,7 @@ public class Advert implements Comparable<Advert> {
     private BodyType bodyType;
 
     @ManyToOne(cascade = {CascadeType.REFRESH}, fetch = FetchType.EAGER)
-    @JoinColumn(
-            name = "advertiser_id",
-            nullable = false,
-            updatable = false
-    )
+    @JoinColumn(name = "advertiser_id", nullable = false, updatable = false)
     private Advertiser advertiser;
 
     @Override

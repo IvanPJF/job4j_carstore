@@ -13,5 +13,6 @@
         <mapping class="ru.job4j.model.Model"/>
         <mapping class="ru.job4j.model.BodyType"/>
         <mapping class="ru.job4j.model.Advert"/>
+        <mapping class="ru.job4j.model.RegAdvertiser"/>
     </session-factory>
 </hibernate-configuration>

@@ -1,9 +1,6 @@
 package ru.job4j.service;
 
-import ru.job4j.model.Advert;
-import ru.job4j.model.BodyType;
-import ru.job4j.model.Manufacturer;
-import ru.job4j.model.Model;
+import ru.job4j.model.*;
 import ru.job4j.persistence.HiberStore;
 import ru.job4j.persistence.Store;
 
@@ -44,5 +41,15 @@ public class ValidateService implements Service {
     @Override
     public Collection<BodyType> findBodyTypes(Model model) {
         return STORE.findBodyTypes(model);
+    }
+
+    @Override
+    public boolean isCredential(RegAdvertiser regAdvertiser) {
+        return STORE.isCredential(regAdvertiser);
+    }
+
+    @Override
+    public Advertiser findAdvertiserByLogin(RegAdvertiser regAdvertiser) {
+        return STORE.findAdvertiserByLogin(regAdvertiser);
     }
 }

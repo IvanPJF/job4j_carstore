@@ -4,6 +4,14 @@
          xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee
          http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
          version="2.4">
+    <filter>
+        <filter-name>AuthFilter</filter-name>
+        <filter-class>ru.job4j.controller.AuthFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>AuthFilter</filter-name>
+        <url-pattern>/add-advert</url-pattern>
+    </filter-mapping>
 
     <servlet>
         <servlet-name>AdvertiserServlet</servlet-name>
@@ -36,5 +44,13 @@
     <servlet-mapping>
         <servlet-name>AddAdvertServlet</servlet-name>
         <url-pattern>/add-advert</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>SignInServlet</servlet-name>
+        <servlet-class>ru.job4j.controller.SignInServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>SignInServlet</servlet-name>
+        <url-pattern>/sign-in</url-pattern>
     </servlet-mapping>
 </web-app>

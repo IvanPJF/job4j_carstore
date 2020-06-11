@@ -17,7 +17,6 @@
 
     <script>
         $(function () {
-            // loadCarsManufacturers();
             initManufacturers();
         });
 
@@ -33,67 +32,8 @@
             });
         }
 
-        // function loadCarsManufacturers() {
-        //     $.ajax({
-        //         url: "car-description",
-        //         type: "GET",
-        //         data: {
-        //             "action": "getManufacturers"
-        //         }
-        //     }).done(function (data) {
-        //         let manufSelector = $("#manufacturer");
-        //         addOptionsToSelect(manufSelector, JSON.parse(data));
-        //         manufSelector.change(function () {
-        //             let divModel = $("#divModel");
-        //             let divBodyType = $("#divBodyType");
-        //             let currManufId = manufSelector.val();
-        //             // let currManufId = $("#manufacturer").val();
-        //             if (currManufId) {
-        //                 $.ajax({
-        //                     url: "car-description",
-        //                     type: "GET",
-        //                     data: {
-        //                         "action": "getModels",
-        //                         "manufacturer": {
-        //                             "id": currManufId
-        //                         }
-        //                     }
-        //                 }).done(function (data) {
-        //                     let models = JSON.parse(data);
-        //                     let modelSelector = $("#model");
-        //                     addOptionsToSelect(modelSelector, models);
-        //                     divModel.removeAttr("hidden");
-        //                     modelSelector.change(function () {
-        //                         let currModelId = modelSelector.val();
-        //                         // let currModelId = $("#model").val();
-        //                         if (currModelId) {
-        //                             let pickModel = "";
-        //                             for (let model of models) {
-        //                                 if (currModelId === `${model.id}`) {
-        //                                     pickModel = model;
-        //                                     break;
-        //                                 }
-        //                             }
-        //                             addOptionsToSelect($("#body_type"), pickModel.bodyTypes);
-        //                             divBodyType.removeAttr("hidden");
-        //                         } else {
-        //                             divBodyType.attr("hidden", true);
-        //                         }
-        //                     });
-        //                 });
-        //             } else {
-        //                 divBodyType.attr("hidden", true);
-        //                 divModel.attr("hidden", true);
-        //             }
-        //         });
-        //     });
-        // }
-
-
         function changeManufacturer() {
             let divModel = $("#divModel");
-            // $("#divBodyType").attr("hidden", true);
-            // divModel.attr("hidden", true);
             hideElements([divModel, $("#divBodyType")]);
             clearSelectors([$("#model"), $("#body_type")]);
             let currManufId = $("#manufacturer").val();
@@ -113,7 +53,6 @@
                 });
             }
         }
-
 
         function changeModel() {
             let divBodyType = $("#divBodyType");
