@@ -15,12 +15,23 @@
             crossorigin="anonymous"></script>
     <script>
         $(function () {
+            currentAdvertiser();
             initAdverts();
         });
 
+        function currentAdvertiser() {
+            $.ajax({
+                url: "ajax/advertiser",
+                type: "GET"
+            }).done(function (data) {
+                let currAdv = data ? JSON.parse(data).name : "Guest";
+                $("#currAdvertiser").text(`Advertiser: ${currAdv}`);
+            });
+        }
+
         function initAdverts() {
             $.ajax({
-                url: "advert",
+                url: "ajax/advert",
                 type: "GET"
             }).done(function (data) {
                 let adverts = JSON.parse(data);
@@ -67,6 +78,9 @@
 </head>
 <body>
 <div class="container">
+    <div class="row justify-content-end pt-3">
+        <div class="col-4 text-right" id="currAdvertiser"></div>
+    </div>
     <div class="row justify-content-end pt-3">
         <div class="col-4 text-right">
             <button class="btn btn-success" onclick="toAddAdvert();">Add new advert</button>

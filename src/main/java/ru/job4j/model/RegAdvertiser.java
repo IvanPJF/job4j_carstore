@@ -17,7 +17,7 @@ public class RegAdvertiser {
     @Column(name = "password", nullable = false)
     private String password;
 
-    @ManyToOne(cascade = {CascadeType.REFRESH}, fetch = FetchType.LAZY)
+    @ManyToOne(cascade = {CascadeType.REFRESH}, fetch = FetchType.EAGER)
     @JoinColumn(name = "advertiser_id", nullable = false, unique = true)
     private Advertiser advertiser;
 

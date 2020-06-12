@@ -20,12 +20,12 @@ public class CarDescriptionServlet extends HttpServlet {
 
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.setContentType("text/html;charset=UTF-8");
-        ObjectMapper mapper = new ObjectMapper();
         String action = req.getParameter("action");
         String manufacturerJSON = req.getParameter("manufacturer");
         String modelJSON = req.getParameter("model");
         Manufacturer manufacturer = null;
         Model model = null;
+        ObjectMapper mapper = new ObjectMapper();
         if (Objects.nonNull(manufacturerJSON)) {
             manufacturer = mapper.readValue(manufacturerJSON, Manufacturer.class);
         }

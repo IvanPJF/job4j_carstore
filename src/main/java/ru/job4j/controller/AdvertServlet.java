@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Enumeration;
 
 public class AdvertServlet extends HttpServlet {
 
@@ -18,22 +19,13 @@ public class AdvertServlet extends HttpServlet {
 
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.setContentType("text/html;charset=UTF-8");
+//        boolean ajax = "XMLHttpRequest".equals(req.getHeader("X-Requested-With"));
+//        if (!ajax) {
+//            resp.sendRedirect(String.format("%s/", req.getContextPath()));
+//            return;
+//        }
         try (final PrintWriter writer = resp.getWriter()) {
-            ObjectMapper mapper = new ObjectMapper();
-            mapper.writeValue(writer, req.getAttribute("advertiser"));
-            mapper.writeValue(writer, SERVICE.allAdverts());
-        }
-    }
-
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        resp.setContentType("text/html;charset=UTF-8");
-        String action = req.getParameter("action");
-        String advertJSON = req.getParameter("advert");
-        ObjectMapper jsonMapper = new ObjectMapper();
-        Advert advert = jsonMapper.readValue(advertJSON, Advert.class);
-        SERVICE.addAdvert(advert);
-        try (final PrintWriter writer = resp.getWriter()) {
-            jsonMapper.writeValue(writer, advert);
+            new ObjectMapper().writeValue(writer, SERVICE.allAdverts());
         }
     }
 }

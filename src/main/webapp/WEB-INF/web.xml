@@ -12,22 +12,30 @@
         <filter-name>AuthFilter</filter-name>
         <url-pattern>/add-advert</url-pattern>
     </filter-mapping>
+    <filter>
+        <filter-name>AjaxFilter</filter-name>
+        <filter-class>ru.job4j.controller.AjaxFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>AjaxFilter</filter-name>
+        <url-pattern>/ajax/*</url-pattern>
+    </filter-mapping>
 
-    <servlet>
-        <servlet-name>AdvertiserServlet</servlet-name>
-        <servlet-class>ru.job4j.controller.AdvertiserServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>AdvertiserServlet</servlet-name>
-        <url-pattern>/advertiser</url-pattern>
-    </servlet-mapping>
     <servlet>
         <servlet-name>AdvertServlet</servlet-name>
         <servlet-class>ru.job4j.controller.AdvertServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>AdvertServlet</servlet-name>
-        <url-pattern>/advert</url-pattern>
+        <url-pattern>/ajax/advert</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>AdvertiserServlet</servlet-name>
+        <servlet-class>ru.job4j.controller.AdvertiserServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>AdvertiserServlet</servlet-name>
+        <url-pattern>/ajax/advertiser</url-pattern>
     </servlet-mapping>
     <servlet>
         <servlet-name>CarDescriptionServlet</servlet-name>
@@ -35,7 +43,7 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>CarDescriptionServlet</servlet-name>
-        <url-pattern>/car-description</url-pattern>
+        <url-pattern>/ajax/car-description</url-pattern>
     </servlet-mapping>
     <servlet>
         <servlet-name>AddAdvertServlet</servlet-name>
@@ -51,6 +59,6 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>SignInServlet</servlet-name>
-        <url-pattern>/sign-in</url-pattern>
+        <url-pattern>/signin</url-pattern>
     </servlet-mapping>
 </web-app>

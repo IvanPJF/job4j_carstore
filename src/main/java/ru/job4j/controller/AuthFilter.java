@@ -12,11 +12,13 @@ public class AuthFilter implements Filter {
     }
 
     public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain) throws ServletException, IOException {
-        HttpServletRequest request = (HttpServletRequest) req;
-        if (!request.getRequestURI().contains("/sign-in")) {
-            HttpSession session = request.getSession();
+        HttpServletRequest httpReq = (HttpServletRequest) req;
+        if (!httpReq.getRequestURI().contains("/signin")) {
+            HttpSession session = httpReq.getSession();
             if (Objects.isNull(session.getAttribute("advertiser"))) {
-                ((HttpServletResponse) resp).sendRedirect(String.format("%s/sign-in", request.getContextPath()));
+                String targetUrl = httpReq.getRequestURI();
+                session.setAttribute("targetUrl", targetUrl);
+                ((HttpServletResponse) resp).sendRedirect(String.format("%s/signin", httpReq.getContextPath()));
                 return;
             }
         }

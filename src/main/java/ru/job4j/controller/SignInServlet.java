@@ -26,14 +26,14 @@ public class SignInServlet extends HttpServlet {
         resp.setContentType("text/html;charset=UTF-8");
         String login = req.getParameter("login");
         String password = req.getParameter("password");
-        if (!SERVICE.isCredential(new RegAdvertiser(login, password))) {
-            try (final PrintWriter writer = resp.getWriter()) {
+        try (final PrintWriter writer = resp.getWriter()) {
+            if (!SERVICE.isCredential(new RegAdvertiser(login, password))) {
                 writer.print("incorrect");
+                return;
             }
-            return;
+            HttpSession session = req.getSession();
+            writer.print((String) session.getAttribute("targetUrl"));
+            session.setAttribute("advertiser", SERVICE.findAdvertiserByLogin(new RegAdvertiser(login)));
         }
-        HttpSession session = req.getSession();
-        Advertiser currentAdvertiser = SERVICE.findAdvertiserByLogin(new RegAdvertiser(login));
-        session.setAttribute("advertiser", currentAdvertiser);
     }
 }

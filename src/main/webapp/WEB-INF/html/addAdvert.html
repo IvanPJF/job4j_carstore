@@ -22,7 +22,7 @@
 
         function initManufacturers() {
             $.ajax({
-                url: "car-description",
+                url: "ajax/car-description",
                 type: "GET",
                 data: {
                     "action": "getManufacturers"
@@ -39,7 +39,7 @@
             let currManufId = $("#manufacturer").val();
             if (currManufId) {
                 $.ajax({
-                    url: "car-description",
+                    url: "ajax/car-description",
                     type: "GET",
                     data: {
                         "action": "getModels",
@@ -61,7 +61,7 @@
             let currModelId = $("#model").val();
             if (currModelId) {
                 $.ajax({
-                    url: "car-description",
+                    url: "ajax/car-description",
                     type: "GET",
                     data: {
                         "action": "getBodyTypes",
@@ -98,13 +98,25 @@
             });
         }
 
+        function currentAdvertiser() {
+            let result;
+            $.ajax({
+                url: "ajax/advertiser",
+                type: "GET",
+                async: false
+            }).done(function (data) {
+                result = JSON.parse(data);
+            });
+            return result;
+        }
+
         function addAdvert() {
             if (validate()) {
+                let advertiserId = currentAdvertiser().id;
                 $.ajax({
-                    url: "advert",
+                    url: "add-advert",
                     type: "POST",
                     data: {
-                        "action": "add",
                         "advert": JSON.stringify({
                             "vin": $("#vin").val(),
                             "mileage": $("#mileage").val(),
@@ -117,14 +129,14 @@
                                 "id": $("#body_type").val()
                             },
                             "advertiser": {
-                                "id": 1
+                                "id": advertiserId
                             }
                         })
                     }
                 }).done(function (data) {
                     alert("Done");
                 }).fail(function (error) {
-                    alert("Error");
+                    alert("Fail");
                 });
             }
         }
@@ -175,7 +187,9 @@
                     <select class="form-control" id="body_type" title="body_type"></select>
                 </div>
                 <div class="row">
-                    <button type="button" class="btn btn-success btn-block" id="btnSave" onclick="addAdvert();">Сохранить</button>
+                    <button type="button" class="btn btn-success btn-block" id="btnSave" onclick="addAdvert();">
+                        Сохранить
+                    </button>
                 </div>
             </form>
         </div>
