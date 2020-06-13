@@ -24,8 +24,8 @@
                 url: "ajax/advertiser",
                 type: "GET"
             }).done(function (data) {
-                let currAdv = data ? JSON.parse(data).name : "Guest";
-                $("#currAdvertiser").text(`Advertiser: ${currAdv}`);
+                let currAdv = data ? JSON.parse(data).name : "guest";
+                $("#currAdvertiser").html(`Welcome: ${currAdv}`);
             });
         }
 

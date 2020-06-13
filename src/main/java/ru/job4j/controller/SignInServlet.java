@@ -1,6 +1,5 @@
 package ru.job4j.controller;
 
-import ru.job4j.model.Advertiser;
 import ru.job4j.model.RegAdvertiser;
 import ru.job4j.service.Service;
 import ru.job4j.service.ValidateService;

@@ -90,7 +90,7 @@
 
         function addOptionsToSelect(targetSelector, elements) {
             targetSelector.html(function () {
-                let htmlOptions = `<option value="">Выберите из списка...</option>`;
+                let htmlOptions = `<option value="">Select from the list ...</option>`;
                 for (let element of elements) {
                     htmlOptions = `${htmlOptions}<option value="${element.id}">${element.name}</option>`;
                 }
@@ -141,6 +141,10 @@
             }
         }
 
+        function toMain() {
+            window.location.href = "./";
+        }
+
         function validate() {
             let inputs = $(":input:not(:button)");
             for (let input of inputs) {
@@ -156,7 +160,7 @@
 <body>
 <div class="container">
     <div class="row pt-5 justify-content-center">
-        <h2>Добавление нового объявления</h2>
+        <h2>Adding a new ad</h2>
     </div>
     <div class="row pt-3 justify-content-center">
         <div class="col-4">
@@ -166,32 +170,39 @@
                     <input type="text" class="form-control" id="vin" title="vin" placeholder="Введите VIN">
                 </div>
                 <div class="form-group row">
-                    <label for="mileage">Пробег</label>
+                    <label for="mileage">Mileage</label>
                     <input type="text" class="form-control" id="mileage" title="mileage" placeholder="Введите пробег">
                 </div>
                 <div class="form-group row">
-                    <label for="price">Цена</label>
+                    <label for="price">Price</label>
                     <input type="text" class="form-control" id="price" title="price" placeholder="Введите цену">
                 </div>
                 <div class="form-group row" id="divManufacturer">
-                    <label for="manufacturer">Производитель</label>
+                    <label for="manufacturer">Manufacturer</label>
                     <select class="form-control" id="manufacturer" title="manufacturer"
                             onchange="changeManufacturer();"></select>
                 </div>
                 <div class="form-group row" id="divModel" hidden>
-                    <label for="model">Модель</label>
+                    <label for="model">Model</label>
                     <select class="form-control" id="model" title="model" onchange="changeModel();"></select>
                 </div>
                 <div class="form-group row" id="divBodyType" hidden>
-                    <label for="body_type">Тип корпуса</label>
+                    <label for="body_type">Body type</label>
                     <select class="form-control" id="body_type" title="body_type"></select>
                 </div>
-                <div class="row">
-                    <button type="button" class="btn btn-success btn-block" id="btnSave" onclick="addAdvert();">
-                        Сохранить
+            </form>
+            <div class="row">
+                <div class="col">
+                    <button type="button" class="btn btn-default btn-block" id="btnCancel" onclick="toMain();">
+                        Cancel
                     </button>
                 </div>
-            </form>
+                <div class="col">
+                    <button type="button" class="btn btn-success btn-block" id="btnSave" onclick="addAdvert();">
+                        Save
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 </div>

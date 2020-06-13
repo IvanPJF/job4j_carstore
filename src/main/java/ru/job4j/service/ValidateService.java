@@ -24,6 +24,11 @@ public class ValidateService implements Service {
     }
 
     @Override
+    public boolean addAdvertiser(RegAdvertiser regAdvertiser) {
+        return STORE.addAdvertiser(regAdvertiser);
+    }
+
+    @Override
     public Collection<Advert> allAdverts() {
         return STORE.allAdverts();
     }
@@ -44,12 +49,12 @@ public class ValidateService implements Service {
     }
 
     @Override
-    public boolean isCredential(RegAdvertiser regAdvertiser) {
-        return STORE.isCredential(regAdvertiser);
+    public Advertiser findAdvertiserByLogin(RegAdvertiser regAdvertiser) {
+        return STORE.findAdvertiserByLogin(regAdvertiser);
     }
 
     @Override
-    public Advertiser findAdvertiserByLogin(RegAdvertiser regAdvertiser) {
-        return STORE.findAdvertiserByLogin(regAdvertiser);
+    public boolean isCredential(RegAdvertiser regAdvertiser) {
+        return STORE.isCredential(regAdvertiser);
     }
 }

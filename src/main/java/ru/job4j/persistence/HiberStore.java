@@ -7,6 +7,7 @@ import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import ru.job4j.model.*;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.function.Function;
@@ -26,6 +27,15 @@ public class HiberStore implements Store {
     @Override
     public void addAdvert(Advert advert) {
         execute(session -> session.save(advert));
+    }
+
+    @Override
+    public boolean addAdvertiser(RegAdvertiser regAdvertiser) {
+        return execute(session -> {
+            session.save(regAdvertiser.getAdvertiser());
+            Serializable id = session.save(regAdvertiser);
+            return Objects.nonNull(id);
+        });
     }
 
     @Override
@@ -51,20 +61,20 @@ public class HiberStore implements Store {
     }
 
     @Override
+    public Advertiser findAdvertiserByLogin(RegAdvertiser regAdvertiser) {
+        return execute(session -> session.createQuery("from RegAdvertiser where login = :login", RegAdvertiser.class)
+                .setParameter("login", regAdvertiser.getLogin())
+                .uniqueResult()
+                .getAdvertiser());
+    }
+
+    @Override
     public boolean isCredential(RegAdvertiser regAdvertiser) {
         return execute(session -> Objects.nonNull(session.createQuery("from RegAdvertiser where login = :login and password = :password", RegAdvertiser.class)
                 .setParameter("login", regAdvertiser.getLogin())
                 .setParameter("password", regAdvertiser.getPassword())
                 .uniqueResult())
         );
-    }
-
-    @Override
-    public Advertiser findAdvertiserByLogin(RegAdvertiser regAdvertiser) {
-        return execute(session -> session.createQuery("from RegAdvertiser where login = :login", RegAdvertiser.class)
-                .setParameter("login", regAdvertiser.getLogin())
-                .uniqueResult()
-                .getAdvertiser());
     }
 
     private <T> T execute(Function<Session, T> function) {

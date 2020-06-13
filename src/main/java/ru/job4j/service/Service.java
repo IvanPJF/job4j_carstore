@@ -7,10 +7,11 @@ import java.util.Collection;
 public interface Service {
 
     void addAdvert(Advert advert);
+    boolean addAdvertiser(RegAdvertiser regAdvertiser);
     Collection<Advert> allAdverts();
     Collection<Manufacturer> allManufacturers();
     Collection<Model> findModels(Manufacturer manufacturer);
     Collection<BodyType> findBodyTypes(Model model);
-    boolean isCredential(RegAdvertiser regAdvertiser);
     Advertiser findAdvertiserByLogin(RegAdvertiser regAdvertiser);
+    boolean isCredential(RegAdvertiser regAdvertiser);
 }

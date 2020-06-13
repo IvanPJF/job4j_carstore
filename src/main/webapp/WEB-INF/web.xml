@@ -46,6 +46,14 @@
         <url-pattern>/ajax/car-description</url-pattern>
     </servlet-mapping>
     <servlet>
+        <servlet-name>AddAdvertiserServlet</servlet-name>
+        <servlet-class>ru.job4j.controller.AddAdvertiserServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>AddAdvertiserServlet</servlet-name>
+        <url-pattern>/add-advertiser</url-pattern>
+    </servlet-mapping>
+    <servlet>
         <servlet-name>AddAdvertServlet</servlet-name>
         <servlet-class>ru.job4j.controller.AddAdvertServlet</servlet-class>
     </servlet>

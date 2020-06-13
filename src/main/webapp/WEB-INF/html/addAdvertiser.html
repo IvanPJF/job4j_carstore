@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Create a new advertiser</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+            integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+            crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+            integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+            crossorigin="anonymous"></script>
+
+
+    <script>
+        function addAdvertiser() {
+            if (validate()) {
+                $.ajax({
+                    url: "add-advertiser",
+                    type: "POST",
+                    data: {
+                        "regAdvertiser": JSON.stringify({
+                            "login": $("#login").val(),
+                            "password": $("#password").val(),
+                            "advertiser": {
+                                "name": $("#name").val(),
+                                "phone": $("#phone").val()
+                            }
+                        })
+                    }
+                }).done(function (data) {
+                    alert("Done");
+                    toMain();
+                }).fail(function (error) {
+                    alert("Fail");
+                });
+            }
+        }
+
+        function toMain() {
+            window.location.href = "./";
+        }
+
+        function validate() {
+            let inputs = $(":text,:password");
+            for (let input of inputs) {
+                if (!input.value) {
+                    alert(`Enter '${input.title}'`);
+                    return false;
+                }
+            }
+            return true;
+        }
+    </script>
+</head>
+<body>
+<div class="container">
+    <div class="row pt-5 justify-content-center">
+        <h2>Create a new advertiser</h2>
+    </div>
+    <div class="row pt-3 justify-content-center">
+        <div class="col-4">
+            <form>
+                <div class="form-group row">
+                    <label for="login">Login</label>
+                    <input type="text" class="form-control" id="login" title="login" placeholder="Enter login">
+                </div>
+                <div class="form-group row">
+                    <label for="password">Password</label>
+                    <input type="password" class="form-control" id="password" title="password"
+                           placeholder="Enter password">
+                </div>
+                <div class="form-group row">
+                    <label for="name">Name</label>
+                    <input type="text" class="form-control" id="name" title="name" placeholder="Enter name">
+                </div>
+                <div class="form-group row">
+                    <label for="phone">Phone</label>
+                    <input type="text" class="form-control" id="phone" title="phone" placeholder="Enter phone">
+                </div>
+            </form>
+            <div class="row">
+                <div class="col">
+                    <button type="button" class="btn btn-default btn-block" id="btnCancel" onclick="toMain();">Cancel
+                    </button>
+                </div>
+                <div class="col">
+                    <button type="button" class="btn btn-success btn-block" id="btnSave" onclick="addAdvertiser();">
+                        Save
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

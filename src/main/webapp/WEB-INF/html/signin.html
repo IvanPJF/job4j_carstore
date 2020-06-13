@@ -30,6 +30,10 @@
                 }
             });
         }
+
+        function toMain() {
+            window.location.href = "./";
+        }
     </script>
 </head>
 <body>
@@ -50,10 +54,20 @@
                     <input type="password" class="form-control" name="password" id="password" title="password"
                            placeholder="Enter password">
                 </div>
-                <div class="row">
+            </form>
+            <div class="row">
+                <a href="add-advertiser">Create a new advertiser</a>
+            </div>
+            <div class="row pt-3">
+                <div class="col">
+                    <button type="button" class="btn btn-default btn-block" id="btnCancel" onclick="toMain();">
+                        Cancel
+                    </button>
+                </div>
+                <div class="col">
                     <button type="button" class="btn btn-success btn-block" onclick="signIn();">Sign in</button>
                 </div>
-            </form>
+            </div>
         </div>
     </div>
 </div>
