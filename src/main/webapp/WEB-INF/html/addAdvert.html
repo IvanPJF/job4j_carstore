@@ -22,7 +22,7 @@
 
         function initManufacturers() {
             $.ajax({
-                url: "ajax/car-description",
+                url: "../ajax/car-description",
                 type: "GET",
                 data: {
                     "action": "getManufacturers"
@@ -39,7 +39,7 @@
             let currManufId = $("#manufacturer").val();
             if (currManufId) {
                 $.ajax({
-                    url: "ajax/car-description",
+                    url: "../ajax/car-description",
                     type: "GET",
                     data: {
                         "action": "getModels",
@@ -61,7 +61,7 @@
             let currModelId = $("#model").val();
             if (currModelId) {
                 $.ajax({
-                    url: "ajax/car-description",
+                    url: "../ajax/car-description",
                     type: "GET",
                     data: {
                         "action": "getBodyTypes",
@@ -99,9 +99,9 @@
         }
 
         function currentAdvertiser() {
-            let result;
+            let result = null;
             $.ajax({
-                url: "ajax/advertiser",
+                url: "../ajax/advertiser",
                 type: "GET",
                 async: false
             }).done(function (data) {
@@ -113,26 +113,29 @@
         function addAdvert() {
             if (validate()) {
                 let advertiserId = currentAdvertiser().id;
+                let formData = new FormData();
+                formData.append("file", $("#file")[0].files[0]);
+                formData.append("advert", JSON.stringify({
+                    "vin": $("#vin").val(),
+                    "mileage": $("#mileage").val(),
+                    "price": $("#price").val(),
+                    "status": true,
+                    "model": {
+                        "id": $("#model").val()
+                    },
+                    "bodyType": {
+                        "id": $("#body_type").val()
+                    },
+                    "advertiser": {
+                        "id": advertiserId
+                    }
+                }));
                 $.ajax({
                     url: "add-advert",
                     type: "POST",
-                    data: {
-                        "advert": JSON.stringify({
-                            "vin": $("#vin").val(),
-                            "mileage": $("#mileage").val(),
-                            "price": $("#price").val(),
-                            "status": false,
-                            "model": {
-                                "id": $("#model").val()
-                            },
-                            "bodyType": {
-                                "id": $("#body_type").val()
-                            },
-                            "advertiser": {
-                                "id": advertiserId
-                            }
-                        })
-                    }
+                    data: formData,
+                    contentType: false,
+                    processData: false
                 }).done(function (data) {
                     alert("Done");
                 }).fail(function (error) {
@@ -142,7 +145,7 @@
         }
 
         function toMain() {
-            window.location.href = "./";
+            window.location.href = "/carstore";
         }
 
         function validate() {
@@ -189,6 +192,10 @@
                 <div class="form-group row" id="divBodyType" hidden>
                     <label for="body_type">Body type</label>
                     <select class="form-control" id="body_type" title="body_type"></select>
+                </div>
+                <div class="form-group row">
+                    <label for="file">Photo</label>
+                    <input type="file" class="form-control-file" id="file" accept="image/*">
                 </div>
             </form>
             <div class="row">

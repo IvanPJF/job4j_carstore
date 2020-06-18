@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Objects;
 
 public class SignInServlet extends HttpServlet {
 
@@ -31,7 +32,6 @@ public class SignInServlet extends HttpServlet {
                 return;
             }
             HttpSession session = req.getSession();
-            writer.print((String) session.getAttribute("targetUrl"));
             session.setAttribute("advertiser", SERVICE.findAdvertiserByLogin(new RegAdvertiser(login)));
         }
     }

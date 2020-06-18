@@ -17,8 +17,8 @@ public class Advert implements Comparable<Advert> {
     @Column(name = "mileage", nullable = false)
     private Integer mileage;
 
-    @Column(name = "photo_path")
-    private String photoPath;
+    @Column(name = "photo_name", unique = true)
+    private String photoName;
 
     @Column(name = "price", nullable = false)
     private Long price;
@@ -75,12 +75,12 @@ public class Advert implements Comparable<Advert> {
         this.mileage = mileage;
     }
 
-    public String getPhotoPath() {
-        return photoPath;
+    public String getPhotoName() {
+        return photoName;
     }
 
-    public void setPhotoPath(String photoPath) {
-        this.photoPath = photoPath;
+    public void setPhotoName(String photoName) {
+        this.photoName = photoName;
     }
 
     public Long getPrice() {

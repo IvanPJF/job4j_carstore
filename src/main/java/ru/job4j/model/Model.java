@@ -3,7 +3,6 @@ package ru.job4j.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.util.Set;
 import java.util.TreeSet;
 

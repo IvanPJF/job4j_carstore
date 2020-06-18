@@ -24,8 +24,13 @@
                 url: "ajax/advertiser",
                 type: "GET"
             }).done(function (data) {
-                let currAdv = data ? JSON.parse(data).name : "guest";
-                $("#currAdvertiser").html(`Welcome: ${currAdv}`);
+                $("#currAdvertiser").html(function () {
+                    let out = "Welcome: ";
+                    if (data) {
+                        return `${out}<a href="auth/profile"><b>${JSON.parse(data).name}</b></a> [<a href="signout">sign out</a>]`;
+                    }
+                    return `${out}guest [<a href="signin"><b>sign in</b></a>]`;
+                });
             });
         }
 
@@ -51,8 +56,8 @@
             let id = advert.id;
             return `${body}`
                 + `<tr>`
-                + `<input type="hidden" id="${id}">`
-                + `<td>Photo ${id}</td>`
+                + `<input type="hidden" id="${id}"/>`
+                + `<td><img src="images/file?name=${advert.photoName}" class="img-fluid img-thumbnail" alt="Photo ${id}"></td>`
                 + `<td>${advertDescription(advert)}</td>`
                 + `</tr>`;
         }
@@ -71,7 +76,7 @@
         }
 
         function toAddAdvert() {
-            window.location.href = "add-advert";
+            window.location.href = "auth/add-advert";
         }
     </script>
 
@@ -79,15 +84,15 @@
 <body>
 <div class="container">
     <div class="row justify-content-end pt-3">
-        <div class="col-4 text-right" id="currAdvertiser"></div>
+        <div class="col text-right" id="currAdvertiser"></div>
     </div>
     <div class="row justify-content-end pt-3">
-        <div class="col-4 text-right">
+        <div class="col text-right">
             <button class="btn btn-success" onclick="toAddAdvert();">Add new advert</button>
         </div>
     </div>
     <div class="row justify-content-center pt-3">
-        <div class="col-4 text-center">
+        <div class="col text-center">
             <h3>Adverts list</h3>
         </div>
     </div>
@@ -95,14 +100,13 @@
         <table class="table" id="table" style="word-break: break-all">
             <thead class="thead-light">
             <tr>
-                <th style="width: 50%">Photo</th>
-                <th style="width: 50%">Description</th>
+                <th style="width: 40%">Photo</th>
+                <th style="width: 60%">Description</th>
             </tr>
             </thead>
             <tbody id="tbody"></tbody>
         </table>
     </div>
 </div>
-
 </body>
 </html>

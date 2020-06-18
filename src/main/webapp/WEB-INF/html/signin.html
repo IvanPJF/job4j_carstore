@@ -25,14 +25,14 @@
             }).done(function (data) {
                 if (data === 'incorrect') {
                     alert("Login and / or password are incorrect");
-                } else {
-                    window.location.href = data;
+                    return;
                 }
+                toMain();
             });
         }
 
         function toMain() {
-            window.location.href = "./";
+            window.location.href = "/carstore";
         }
     </script>
 </head>

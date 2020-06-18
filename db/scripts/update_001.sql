@@ -53,9 +53,9 @@ CREATE TABLE IF NOT EXISTS advert
     id            SERIAL,
     vin           VARCHAR(20) NOT NULL UNIQUE,
     mileage       INTEGER     NOT NULL,
-    photo_path    TEXT,
+    photo_name    VARCHAR(100) UNIQUE,
     price         BIGINT      NOT NULL,
-    status        BOOLEAN     NOT NULL,
+    status        BOOLEAN DEFAULT true,
     model_id      INTEGER     NOT NULL,
     body_type_id  INTEGER     NOT NULL,
     advertiser_id INTEGER     NOT NULL,
@@ -89,10 +89,4 @@ VALUES (1, 1),
        (2, 3),
        (3, 3),
        (3, 4);
-
-INSERT INTO advertiser (name, phone)
-VALUES ('Ivan', 8900);
-
-INSERT INTO reg_advertiser(login, password, advertiser_id)
-VALUES ('admin', 'admin', 1);
 

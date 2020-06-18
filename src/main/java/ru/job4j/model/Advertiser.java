@@ -1,6 +1,7 @@
 package ru.job4j.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.SortNatural;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -23,6 +24,7 @@ public class Advertiser {
 
     @JsonIgnore
     @OneToMany(cascade = {CascadeType.REFRESH}, fetch = FetchType.EAGER, mappedBy = "advertiser")
+    @SortNatural
     private Set<Advert> adverts = new TreeSet<>();
 
     public Integer getId() {

@@ -19,8 +19,8 @@ public class ValidateService implements Service {
     }
 
     @Override
-    public void addAdvert(Advert advert) {
-        STORE.addAdvert(advert);
+    public boolean addAdvert(Advert advert) {
+        return STORE.addAdvert(advert);
     }
 
     @Override
@@ -29,8 +29,8 @@ public class ValidateService implements Service {
     }
 
     @Override
-    public Collection<Advert> allAdverts() {
-        return STORE.allAdverts();
+    public Collection<Advert> allActiveAdverts() {
+        return STORE.allActiveAdverts();
     }
 
     @Override
@@ -49,6 +49,11 @@ public class ValidateService implements Service {
     }
 
     @Override
+    public Collection<Advert> findAdvertsByAdvertiser(Advertiser advertiser) {
+        return STORE.findAdvertsByAdvertiser(advertiser);
+    }
+
+    @Override
     public Advertiser findAdvertiserByLogin(RegAdvertiser regAdvertiser) {
         return STORE.findAdvertiserByLogin(regAdvertiser);
     }
@@ -56,5 +61,10 @@ public class ValidateService implements Service {
     @Override
     public boolean isCredential(RegAdvertiser regAdvertiser) {
         return STORE.isCredential(regAdvertiser);
+    }
+
+    @Override
+    public boolean changeAdvertsStatus(Collection<Advert> adverts) {
+        return STORE.changeAdvertsStatus(adverts);
     }
 }

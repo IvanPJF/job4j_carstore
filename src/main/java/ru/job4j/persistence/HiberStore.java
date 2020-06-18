@@ -25,22 +25,21 @@ public class HiberStore implements Store {
     }
 
     @Override
-    public void addAdvert(Advert advert) {
-        execute(session -> session.save(advert));
+    public boolean addAdvert(Advert advert) {
+        return Objects.nonNull(execute(session -> session.save(advert)));
     }
 
     @Override
     public boolean addAdvertiser(RegAdvertiser regAdvertiser) {
-        return execute(session -> {
+        return Objects.nonNull(execute(session -> {
             session.save(regAdvertiser.getAdvertiser());
-            Serializable id = session.save(regAdvertiser);
-            return Objects.nonNull(id);
-        });
+            return session.save(regAdvertiser);
+        }));
     }
 
     @Override
-    public Collection<Advert> allAdverts() {
-        return execute(session -> session.createQuery("from Advert order by id", Advert.class).list());
+    public Collection<Advert> allActiveAdverts() {
+        return execute(session -> session.createQuery("from Advert where status = true order by id", Advert.class).list());
     }
 
     @Override
@@ -61,6 +60,11 @@ public class HiberStore implements Store {
     }
 
     @Override
+    public Collection<Advert> findAdvertsByAdvertiser(Advertiser advertiser) {
+        return execute(session -> session.get(Advertiser.class, advertiser.getId()).getAdverts());
+    }
+
+    @Override
     public Advertiser findAdvertiserByLogin(RegAdvertiser regAdvertiser) {
         return execute(session -> session.createQuery("from RegAdvertiser where login = :login", RegAdvertiser.class)
                 .setParameter("login", regAdvertiser.getLogin())
@@ -70,11 +74,18 @@ public class HiberStore implements Store {
 
     @Override
     public boolean isCredential(RegAdvertiser regAdvertiser) {
-        return execute(session -> Objects.nonNull(session.createQuery("from RegAdvertiser where login = :login and password = :password", RegAdvertiser.class)
+        return Objects.nonNull(execute(session -> session.createQuery("from RegAdvertiser where login = :login and password = :password", RegAdvertiser.class)
                 .setParameter("login", regAdvertiser.getLogin())
                 .setParameter("password", regAdvertiser.getPassword())
                 .uniqueResult())
         );
+    }
+
+    @Override
+    public boolean changeAdvertsStatus(Collection<Advert> adverts) {
+        return execute(session -> {
+            session.get
+        });
     }
 
     private <T> T execute(Function<Session, T> function) {
@@ -86,7 +97,8 @@ public class HiberStore implements Store {
                 return result;
             } catch (Exception e) {
                 session.getTransaction().rollback();
-                throw e;
+                e.printStackTrace();
+                return null;
             }
         }
     }

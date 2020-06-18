@@ -10,7 +10,7 @@
     </filter>
     <filter-mapping>
         <filter-name>AuthFilter</filter-name>
-        <url-pattern>/add-advert</url-pattern>
+        <url-pattern>/auth/*</url-pattern>
     </filter-mapping>
     <filter>
         <filter-name>AjaxFilter</filter-name>
@@ -59,7 +59,7 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>AddAdvertServlet</servlet-name>
-        <url-pattern>/add-advert</url-pattern>
+        <url-pattern>/auth/add-advert</url-pattern>
     </servlet-mapping>
     <servlet>
         <servlet-name>SignInServlet</servlet-name>
@@ -68,5 +68,30 @@
     <servlet-mapping>
         <servlet-name>SignInServlet</servlet-name>
         <url-pattern>/signin</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>LoadImageServlet</servlet-name>
+        <servlet-class>ru.job4j.controller.LoadImageServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>LoadImageServlet</servlet-name>
+        <url-pattern>/images/file</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>ProfileServlet</servlet-name>
+        <servlet-class>ru.job4j.controller.ProfileServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ProfileServlet</servlet-name>
+        <url-pattern>/auth/profile</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>SignOutServlet</servlet-name>
+        <servlet-class>ru.job4j.controller.SignOutServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>SignOutServlet</servlet-name>
+        <url-pattern>/signout</url-pattern>
     </servlet-mapping>
 </web-app>
