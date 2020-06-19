@@ -5,6 +5,7 @@ import ru.job4j.persistence.HiberStore;
 import ru.job4j.persistence.Store;
 
 import java.util.Collection;
+import java.util.Map;
 
 public class ValidateService implements Service {
 
@@ -64,7 +65,7 @@ public class ValidateService implements Service {
     }
 
     @Override
-    public boolean changeAdvertsStatus(Collection<Advert> adverts) {
+    public boolean changeAdvertsStatus(Map<Integer, Advert> adverts) {
         return STORE.changeAdvertsStatus(adverts);
     }
 }

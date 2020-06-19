@@ -47,7 +47,7 @@
             return `${body}`
                 + `<tr>`
                 + `<input type="hidden" value="${id}" id="${id}"/>`
-                + `<td><input type="checkbox" ${advert.status ? 'checked' : ''}></td>`
+                + `<td><input type="checkbox" ${advert.status ? 'checked' : ''} onchange="showButtonSave();"></td>`
                 + `<td><img src="../images/file?name=${advert.photoName}" class="img-fluid img-thumbnail" alt="Photo ${id}"></td>`
                 + `<td>${advertDescription(advert)}</td>`
                 + `</tr>`;
@@ -65,8 +65,10 @@
 
         function changeAdvertsStatus() {
             let adverts = [];
-            $("#table tr").each(function (index, element) {
-                adverts.push({"id": element.attr("hidden"), "status": element.attr("checkbox")});
+            $("#tbody > tr").each(function (index, element) {
+                let id = $(element).find(":hidden:first").val();
+                let status = $(element).find(":checkbox:first").prop("checked");
+                adverts.push({"id": id, "status": status});
             });
             $.ajax({
                 url: "../ajax/advert",
@@ -78,8 +80,15 @@
             }).done(function (data) {
                 alert("Done");
             }).fail(function (error) {
-                alert("Fail");
+                alert(`Fail: ${error.text()}`);
             });
+        }
+
+        function showButtonSave() {
+            let btnSave = $("#btnSave");
+            if (btnSave.attr("hidden")) {
+                btnSave.attr("hidden", false);
+            }
         }
 
         function toMain() {
@@ -102,7 +111,7 @@
     </div>
     <div class="row pt-3">
         <div class="col-2">
-            <button type="button" class="btn btn-success" onclick="changeAdvertsStatus();">Save</button>
+            <button type="button" class="btn btn-success" id="btnSave" onclick="changeAdvertsStatus();" hidden>Save</button>
         </div>
         <div class="col-4 offset-2">
             <h5>My list of ads</h5>

@@ -1,6 +1,7 @@
 package ru.job4j.controller;
 
-import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import ru.job4j.model.Advert;
 import ru.job4j.model.Advertiser;
@@ -14,10 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 public class AdvertServlet extends HttpServlet {
 
@@ -43,17 +41,26 @@ public class AdvertServlet extends HttpServlet {
         resp.setContentType("text/html;charset=UTF-8");
         String action = req.getParameter("action");
         String advertsJson = req.getParameter("adverts");
-        boolean result = false;
         if ("changeAdvertsStatus".equals(action) && Objects.nonNull(advertsJson)) {
-            HttpSession session = req.getSession();
-            Advertiser advertiser = (Advertiser) session.getAttribute("advertiser");
-            ObjectMapper mapper = new ObjectMapper();
-            Map<Integer, Advert> adverts = mapper.readValue(advertsJson, new TypeReference<>() {
-            });
-            result = SERVICE.changeAdvertsStatus(adverts);
-        }
-        if (!result) {
+            if (SERVICE.changeAdvertsStatus(buildAdverts(req, advertsJson))) {
+                return;
+            }
             resp.sendError(500, "Statuses failed to change");
         }
+    }
+
+    private Map<Integer, Advert> buildAdverts(HttpServletRequest req, String advertsJson) throws JsonProcessingException {
+        Map<Integer, Advert> advertsMap = new HashMap<>();
+        HttpSession session = req.getSession();
+        Advertiser advertiser = (Advertiser) session.getAttribute("advertiser");
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode rootNode = mapper.readTree(advertsJson);
+        Iterator<JsonNode> elements = rootNode.elements();
+        while (elements.hasNext()) {
+            Advert advert = mapper.readValue(elements.next().toString(), Advert.class);
+            advert.setAdvertiser(advertiser);
+            advertsMap.put(advert.getId(), advert);
+        }
+        return advertsMap;
     }
 }

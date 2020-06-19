@@ -7,9 +7,7 @@ import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import ru.job4j.model.*;
 
-import java.io.Serializable;
-import java.util.Collection;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.Function;
 
 public class HiberStore implements Store {
@@ -39,7 +37,7 @@ public class HiberStore implements Store {
 
     @Override
     public Collection<Advert> allActiveAdverts() {
-        return execute(session -> session.createQuery("from Advert where status = true order by id", Advert.class).list());
+        return execute(session -> session.createQuery("from Advert where status = true order by id desc", Advert.class).list());
     }
 
     @Override
@@ -82,10 +80,23 @@ public class HiberStore implements Store {
     }
 
     @Override
-    public boolean changeAdvertsStatus(Collection<Advert> adverts) {
-        return execute(session -> {
-            session.get
-        });
+    public boolean changeAdvertsStatus(Map<Integer, Advert> adverts) {
+        Advertiser advertiser = adverts.values().iterator().next().getAdvertiser();
+        return Objects.nonNull(
+                execute(session -> {
+                    try {
+                        Set<Advert> persistAdverts = session.get(Advertiser.class, advertiser.getId()).getAdverts();
+                        persistAdverts.forEach(advert -> {
+                            Advert advertWithNewStatus = adverts.get(advert.getId());
+                            advert.setStatus(advertWithNewStatus.getStatus());
+                        });
+                        return true;
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        return false;
+                    }
+                })
+        );
     }
 
     private <T> T execute(Function<Session, T> function) {

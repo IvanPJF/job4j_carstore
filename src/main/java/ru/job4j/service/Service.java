@@ -3,6 +3,7 @@ package ru.job4j.service;
 import ru.job4j.model.*;
 
 import java.util.Collection;
+import java.util.Map;
 
 public interface Service {
 
@@ -15,5 +16,5 @@ public interface Service {
     Collection<Advert> findAdvertsByAdvertiser(Advertiser advertiser);
     Advertiser findAdvertiserByLogin(RegAdvertiser regAdvertiser);
     boolean isCredential(RegAdvertiser regAdvertiser);
-    boolean changeAdvertsStatus(Collection<Advert> adverts);
+    boolean changeAdvertsStatus(Map<Integer, Advert> adverts);
 }

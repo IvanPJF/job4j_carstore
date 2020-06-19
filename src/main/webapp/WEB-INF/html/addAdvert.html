@@ -114,7 +114,10 @@
             if (validate()) {
                 let advertiserId = currentAdvertiser().id;
                 let formData = new FormData();
-                formData.append("file", $("#file")[0].files[0]);
+                let file = $("#file");
+                if (file.val()) {
+                    formData.append("file", file[0].files[0]);
+                }
                 formData.append("advert", JSON.stringify({
                     "vin": $("#vin").val(),
                     "mileage": $("#mileage").val(),
@@ -149,7 +152,7 @@
         }
 
         function validate() {
-            let inputs = $(":input:not(:button)");
+            let inputs = $(":input:not(:button):not(:file)");
             for (let input of inputs) {
                 if (!input.value) {
                     alert(`Enter '${input.title}'`);
