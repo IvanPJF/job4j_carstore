@@ -1,5 +1,6 @@
 package ru.job4j.persistence;
 
+import ru.job4j.dto.CarDescription;
 import ru.job4j.model.*;
 
 import java.util.Collection;
@@ -11,8 +12,8 @@ public interface Store {
     boolean addAdvertiser(RegAdvertiser regAdvertiser);
     Collection<Advert> allActiveAdverts();
     Collection<Manufacturer> allManufacturers();
-    Collection<Model> findModels(Manufacturer manufacturer);
-    Collection<BodyType> findBodyTypes(Model model);
+    Collection<Model> findModels(CarDescription carDescription);
+    Collection<BodyType> findBodyTypes(CarDescription carDescription);
     Collection<Advert> findAdvertsByAdvertiser(Advertiser advertiser);
     Advertiser findAdvertiserByLogin(RegAdvertiser regAdvertiser);
     boolean isCredential(RegAdvertiser regAdvertiser);

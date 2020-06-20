@@ -40,17 +40,20 @@ public class AdvertServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.setContentType("text/html;charset=UTF-8");
         String action = req.getParameter("action");
-        String advertsJson = req.getParameter("adverts");
-        if ("changeAdvertsStatus".equals(action) && Objects.nonNull(advertsJson)) {
-            if (SERVICE.changeAdvertsStatus(buildAdverts(req, advertsJson))) {
+        if ("changeAdvertsStatus".equals(action)) {
+            if (SERVICE.changeAdvertsStatus(buildAdverts(req))) {
                 return;
             }
             resp.sendError(500, "Statuses failed to change");
         }
     }
 
-    private Map<Integer, Advert> buildAdverts(HttpServletRequest req, String advertsJson) throws JsonProcessingException {
+    private Map<Integer, Advert> buildAdverts(HttpServletRequest req) throws JsonProcessingException {
         Map<Integer, Advert> advertsMap = new HashMap<>();
+        String advertsJson = req.getParameter("adverts");
+        if (Objects.isNull(advertsJson)) {
+            return advertsMap;
+        }
         HttpSession session = req.getSession();
         Advertiser advertiser = (Advertiser) session.getAttribute("advertiser");
         ObjectMapper mapper = new ObjectMapper();

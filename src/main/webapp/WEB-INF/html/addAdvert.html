@@ -112,7 +112,7 @@
 
         function addAdvert() {
             if (validate()) {
-                let advertiserId = currentAdvertiser().id;
+                let advertiser = currentAdvertiser();
                 let formData = new FormData();
                 let file = $("#file");
                 if (file.val()) {
@@ -130,7 +130,7 @@
                         "id": $("#body_type").val()
                     },
                     "advertiser": {
-                        "id": advertiserId
+                        "id": advertiser.id
                     }
                 }));
                 $.ajax({

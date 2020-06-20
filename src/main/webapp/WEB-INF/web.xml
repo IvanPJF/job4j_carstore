@@ -21,6 +21,12 @@
         <url-pattern>/ajax/*</url-pattern>
     </filter-mapping>
 
+    <context-param>
+        <description>The name of the folder for storing images</description>
+        <param-name>name.dir.images</param-name>
+        <param-value>images</param-value>
+    </context-param>
+
     <servlet>
         <servlet-name>AdvertServlet</servlet-name>
         <servlet-class>ru.job4j.controller.AdvertServlet</servlet-class>

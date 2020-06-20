@@ -18,7 +18,7 @@ public class LoadImageServlet extends HttpServlet {
     @Override
     public void init() throws ServletException {
         ServletContext servletContext = getServletContext();
-        String imagesDirPath = servletContext.getRealPath("images");
+        String imagesDirPath = servletContext.getRealPath(servletContext.getInitParameter("name.dir.images"));
         dirForImages = new File(imagesDirPath);
         if (dirForImages.exists() || dirForImages.mkdir()) {
             servletContext.setAttribute("dirForImages", dirForImages);

@@ -5,6 +5,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
+import ru.job4j.dto.CarDescription;
 import ru.job4j.model.*;
 
 import java.util.*;
@@ -46,15 +47,15 @@ public class HiberStore implements Store {
     }
 
     @Override
-    public Collection<Model> findModels(Manufacturer manufacturer) {
+    public Collection<Model> findModels(CarDescription carDescription) {
         return execute(session -> session.createQuery("from Model where manufacturer.id = :idManufacturer order by name", Model.class)
-                .setParameter("idManufacturer", manufacturer.getId())
+                .setParameter("idManufacturer", carDescription.getManufacturer().getId())
                 .list());
     }
 
     @Override
-    public Collection<BodyType> findBodyTypes(Model model) {
-        return execute(session -> session.get(Model.class, model.getId()).getBodyTypes());
+    public Collection<BodyType> findBodyTypes(CarDescription carDescription) {
+        return execute(session -> session.get(Model.class, carDescription.getModel().getId()).getBodyTypes());
     }
 
     @Override

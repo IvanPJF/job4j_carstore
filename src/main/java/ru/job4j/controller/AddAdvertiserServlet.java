@@ -24,10 +24,9 @@ public class AddAdvertiserServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         ObjectMapper mapper = new ObjectMapper();
         RegAdvertiser regAdvertiser = mapper.readValue(req.getParameter("regAdvertiser"), RegAdvertiser.class);
-        if (!SERVICE.addAdvertiser(regAdvertiser)) {
-            try (final PrintWriter writer = resp.getWriter()) {
-                writer.print("fail");
-            }
+        if (SERVICE.addAdvertiser(regAdvertiser)) {
+            return;
         }
+        resp.sendError(500, "Failed to add advertiser");
     }
 }

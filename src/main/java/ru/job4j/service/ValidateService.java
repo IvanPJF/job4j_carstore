@@ -1,11 +1,14 @@
 package ru.job4j.service;
 
+import ru.job4j.dto.CarDescription;
 import ru.job4j.model.*;
 import ru.job4j.persistence.HiberStore;
 import ru.job4j.persistence.Store;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class ValidateService implements Service {
 
@@ -21,6 +24,9 @@ public class ValidateService implements Service {
 
     @Override
     public boolean addAdvert(Advert advert) {
+        if (Objects.isNull(advert)) {
+            return false;
+        }
         return STORE.addAdvert(advert);
     }
 
@@ -40,13 +46,19 @@ public class ValidateService implements Service {
     }
 
     @Override
-    public Collection<Model> findModels(Manufacturer manufacturer) {
-        return STORE.findModels(manufacturer);
+    public Collection<Model> findModels(CarDescription carDescription) {
+        if (Objects.isNull(carDescription.getManufacturer())) {
+            return List.of();
+        }
+        return STORE.findModels(carDescription);
     }
 
     @Override
-    public Collection<BodyType> findBodyTypes(Model model) {
-        return STORE.findBodyTypes(model);
+    public Collection<BodyType> findBodyTypes(CarDescription carDescription) {
+        if (Objects.isNull(carDescription.getModel())) {
+            return List.of();
+        }
+        return STORE.findBodyTypes(carDescription);
     }
 
     @Override
@@ -66,6 +78,9 @@ public class ValidateService implements Service {
 
     @Override
     public boolean changeAdvertsStatus(Map<Integer, Advert> adverts) {
+        if (adverts.isEmpty()) {
+            return false;
+        }
         return STORE.changeAdvertsStatus(adverts);
     }
 }

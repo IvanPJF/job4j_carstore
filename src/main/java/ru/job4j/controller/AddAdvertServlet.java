@@ -34,46 +34,51 @@ public class AddAdvertServlet extends HttpServlet {
 
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.setContentType("text/html;charset=UTF-8");
-        ServletContext servletContext = getServletContext();
-        DiskFileItemFactory fileItemFactory = new DiskFileItemFactory();
-        fileItemFactory.setRepository((File) servletContext.getAttribute("javax.servlet.context.tempdir"));
-        ServletFileUpload fileUpload = new ServletFileUpload(fileItemFactory);
-        fileUpload.setFileSizeMax(FILE_MAX_SIZE);
-
-        List<FileItem> items = List.of();
-        try {
-            items = fileUpload.parseRequest(req);
-        } catch (FileUploadException e) {
-            e.printStackTrace();
-        }
+        List<FileItem> items = getListFileItems(req);
         Advert advert = null;
-        File file = null;
+        File imageFile = null;
         for (FileItem item : items) {
             if (!item.isFormField()) {
-                file = createImageFile(dirForImages, item);
+                imageFile = createImageFile(item);
                 continue;
             }
             String advertJson = item.getString();
             ObjectMapper mapper = new ObjectMapper();
             advert = mapper.readValue(advertJson, Advert.class);
-        }
-        if (Objects.nonNull(file) && file.exists()) {
-            advert.setPhotoName(file.getName());
+            if (Objects.nonNull(imageFile) && imageFile.exists()) {
+                advert.setPhotoName(imageFile.getName());
+            }
         }
         if (!SERVICE.addAdvert(advert)) {
-            file.delete();
+            resp.sendError(500, "Failed to add file");
         }
     }
 
-    private File createImageFile(File dirForImages, FileItem fileItem) {
-        String imgFullFileName = fileItem.getName();
-        File imgFile = new File(dirForImages, imgFullFileName);
+    private List<FileItem> getListFileItems(HttpServletRequest request) {
+        ServletContext servletContext = getServletContext();
+        DiskFileItemFactory fileItemFactory = new DiskFileItemFactory();
+        fileItemFactory.setRepository((File) servletContext.getAttribute("javax.servlet.context.tempdir"));
+        ServletFileUpload fileUpload = new ServletFileUpload(fileItemFactory);
+        fileUpload.setFileSizeMax(FILE_MAX_SIZE);
+        try {
+            return fileUpload.parseRequest(request);
+        } catch (FileUploadException e) {
+            e.printStackTrace();
+            return List.of();
+        }
+    }
+
+    private File createImageFile(FileItem fileItem) {
+        String imgFileName = fileItem.getName();
+        File imgFile = new File(dirForImages, imgFileName);
         while (imgFile.exists()) {
             int i = 0;
-            if (imgFullFileName.contains(".")) {
-                imgFullFileName = imgFullFileName.replace(".", ++i + ".");
+            if (imgFileName.contains(".")) {
+                imgFileName = imgFileName.replace(".", ++i + ".");
+            } else {
+                imgFileName += ++i;
             }
-            imgFile = new File(dirForImages, imgFullFileName);
+            imgFile = new File(dirForImages, imgFileName);
         }
         try {
             fileItem.write(imgFile);
