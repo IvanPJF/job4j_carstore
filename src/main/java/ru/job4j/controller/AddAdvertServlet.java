@@ -19,21 +19,14 @@ import java.util.*;
 
 public class AddAdvertServlet extends HttpServlet {
 
-    private static final Service SERVICE = ValidateService.getInstance();
+    private final Service service = ValidateService.getInstance();
     private static final long FILE_MAX_SIZE = 1024 * 1024 * 10;
-    private static File dirForImages;
-
-    @Override
-    public void init() throws ServletException {
-        dirForImages = (File) getServletContext().getAttribute("dirForImages");
-    }
 
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         req.getRequestDispatcher("/WEB-INF/html/addAdvert.html").forward(req, resp);
     }
 
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        resp.setContentType("text/html;charset=UTF-8");
         List<FileItem> items = getListFileItems(req);
         Advert advert = null;
         File imageFile = null;
@@ -49,7 +42,7 @@ public class AddAdvertServlet extends HttpServlet {
                 advert.setPhotoName(imageFile.getName());
             }
         }
-        if (!SERVICE.addAdvert(advert)) {
+        if (!service.addAdvert(advert)) {
             resp.sendError(500, "Failed to add file");
         }
     }
@@ -57,7 +50,8 @@ public class AddAdvertServlet extends HttpServlet {
     private List<FileItem> getListFileItems(HttpServletRequest request) {
         ServletContext servletContext = getServletContext();
         DiskFileItemFactory fileItemFactory = new DiskFileItemFactory();
-        fileItemFactory.setRepository((File) servletContext.getAttribute("javax.servlet.context.tempdir"));
+        File repository = (File) servletContext.getAttribute("javax.servlet.context.tempdir");
+        fileItemFactory.setRepository(repository);
         ServletFileUpload fileUpload = new ServletFileUpload(fileItemFactory);
         fileUpload.setFileSizeMax(FILE_MAX_SIZE);
         try {
@@ -69,6 +63,7 @@ public class AddAdvertServlet extends HttpServlet {
     }
 
     private File createImageFile(FileItem fileItem) {
+        File dirForImages = (File) getServletContext().getAttribute("dirForImages");
         String imgFileName = fileItem.getName();
         File imgFile = new File(dirForImages, imgFileName);
         while (imgFile.exists()) {

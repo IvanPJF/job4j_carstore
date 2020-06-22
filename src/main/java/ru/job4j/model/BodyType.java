@@ -2,6 +2,8 @@ package ru.job4j.model;
 
 import javax.persistence.*;
 
+import java.util.Objects;
+
 import static ru.job4j.util.LexicalOrder.compare;
 
 @Entity
@@ -35,5 +37,23 @@ public class BodyType implements Comparable<BodyType> {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        BodyType bodyType = (BodyType) o;
+        return Objects.equals(id, bodyType.id)
+                && Objects.equals(name, bodyType.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name);
     }
 }

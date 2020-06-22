@@ -13,10 +13,11 @@ import java.util.function.Function;
 
 public class HiberStore implements Store {
 
-    private static final SessionFactory SESSION_FACTORY = buildSessionFactory();
+    private final SessionFactory sessionFactory;
     private static final Store STORE = new HiberStore();
 
     private HiberStore() {
+        sessionFactory = buildSessionFactory();
     }
 
     public static Store getInstance() {
@@ -38,24 +39,30 @@ public class HiberStore implements Store {
 
     @Override
     public Collection<Advert> allActiveAdverts() {
-        return execute(session -> session.createQuery("from Advert where status = true order by id desc", Advert.class).list());
-    }
-
-    @Override
-    public Collection<Manufacturer> allManufacturers() {
-        return execute(session -> session.createQuery("from Manufacturer order by name", Manufacturer.class).list());
-    }
-
-    @Override
-    public Collection<Model> findModels(CarDescription carDescription) {
-        return execute(session -> session.createQuery("from Model where manufacturer.id = :idManufacturer order by name", Model.class)
-                .setParameter("idManufacturer", carDescription.getManufacturer().getId())
+        return execute(session -> session
+                .createQuery("from Advert where status = true order by id desc", Advert.class)
                 .list());
     }
 
     @Override
+    public Collection<Manufacturer> allManufacturers() {
+        return execute(session -> session
+                .createQuery("from Manufacturer order by name", Manufacturer.class).list());
+    }
+
+    @Override
+    public Collection<Model> findModels(CarDescription carDescription) {
+        return execute(session -> session
+                .createQuery(
+                        "from Model where manufacturer.id = :idManufacturer order by name",
+                        Model.class
+                ).setParameter("idManufacturer", carDescription.getManufacturer().getId()).list());
+    }
+
+    @Override
     public Collection<BodyType> findBodyTypes(CarDescription carDescription) {
-        return execute(session -> session.get(Model.class, carDescription.getModel().getId()).getBodyTypes());
+        return execute(session -> session
+                .get(Model.class, carDescription.getModel().getId()).getBodyTypes());
     }
 
     @Override
@@ -65,16 +72,18 @@ public class HiberStore implements Store {
 
     @Override
     public Advertiser findAdvertiserByLogin(RegAdvertiser regAdvertiser) {
-        return execute(session -> session.createQuery("from RegAdvertiser where login = :login", RegAdvertiser.class)
-                .setParameter("login", regAdvertiser.getLogin())
-                .uniqueResult()
-                .getAdvertiser());
+        return execute(session -> session
+                .createQuery("from RegAdvertiser where login = :login", RegAdvertiser.class)
+                .setParameter("login", regAdvertiser.getLogin()).uniqueResult().getAdvertiser());
     }
 
     @Override
     public boolean isCredential(RegAdvertiser regAdvertiser) {
-        return Objects.nonNull(execute(session -> session.createQuery("from RegAdvertiser where login = :login and password = :password", RegAdvertiser.class)
-                .setParameter("login", regAdvertiser.getLogin())
+        return Objects.nonNull(execute(session -> session
+                .createQuery(
+                        "from RegAdvertiser where login = :login and password = :password",
+                        RegAdvertiser.class
+                ).setParameter("login", regAdvertiser.getLogin())
                 .setParameter("password", regAdvertiser.getPassword())
                 .uniqueResult())
         );
@@ -86,7 +95,8 @@ public class HiberStore implements Store {
         return Objects.nonNull(
                 execute(session -> {
                     try {
-                        Set<Advert> persistAdverts = session.get(Advertiser.class, advertiser.getId()).getAdverts();
+                        Set<Advert> persistAdverts = session
+                                .get(Advertiser.class, advertiser.getId()).getAdverts();
                         persistAdverts.forEach(advert -> {
                             Advert advertWithNewStatus = adverts.get(advert.getId());
                             advert.setStatus(advertWithNewStatus.getStatus());
@@ -101,7 +111,7 @@ public class HiberStore implements Store {
     }
 
     private <T> T execute(Function<Session, T> function) {
-        try (final Session session = SESSION_FACTORY.openSession()) {
+        try (final Session session = sessionFactory.openSession()) {
             try {
                 session.beginTransaction();
                 T result = function.apply(session);
@@ -115,8 +125,9 @@ public class HiberStore implements Store {
         }
     }
 
-    private static SessionFactory buildSessionFactory() {
-        final StandardServiceRegistry registry = new StandardServiceRegistryBuilder().configure().build();
+    private SessionFactory buildSessionFactory() {
+        final StandardServiceRegistry registry = new StandardServiceRegistryBuilder()
+                .configure().build();
         try {
             return new MetadataSources(registry).buildMetadata().buildSessionFactory();
         } catch (Exception e) {

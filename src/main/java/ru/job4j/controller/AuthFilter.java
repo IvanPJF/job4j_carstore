@@ -16,7 +16,8 @@ public class AuthFilter implements Filter {
         if (!httpReq.getRequestURI().contains("/signin")) {
             HttpSession session = httpReq.getSession();
             if (Objects.isNull(session.getAttribute("advertiser"))) {
-                ((HttpServletResponse) resp).sendRedirect(String.format("%s/signin", httpReq.getContextPath()));
+                String redirectPath = String.format("%s/signin", httpReq.getContextPath());
+                ((HttpServletResponse) resp).sendRedirect(redirectPath);
                 return;
             }
         }

@@ -1,6 +1,7 @@
 package ru.job4j.model;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 @Table(name = "advert")
@@ -121,5 +122,23 @@ public class Advert implements Comparable<Advert> {
 
     public void setBodyType(BodyType bodyType) {
         this.bodyType = bodyType;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Advert advert = (Advert) o;
+        return Objects.equals(id, advert.id)
+                && Objects.equals(vin, advert.vin);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, vin);
     }
 }

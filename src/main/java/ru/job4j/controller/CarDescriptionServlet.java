@@ -19,33 +19,34 @@ import java.util.Objects;
 
 public class CarDescriptionServlet extends HttpServlet {
 
-    private static final Service SERVICE = ValidateService.getInstance();
-    private static final DispatcherCar DISPATCH_CAR = DispatcherCar.getInstance();
-    private static final ObjectMapper MAPPER = new ObjectMapper();
+    private final Service service = ValidateService.getInstance();
+    private final DispatcherCar dispatchCar = DispatcherCar.getInstance();
 
     @Override
     public void init() throws ServletException {
-        DISPATCH_CAR.load("getManufacturers", (carDesc, service) -> SERVICE.allManufacturers());
-        DISPATCH_CAR.load("getModels", (carDesc, service) -> SERVICE.findModels(carDesc));
-        DISPATCH_CAR.load("getBodyTypes", (carDesc, service) -> SERVICE.findBodyTypes(carDesc));
+        dispatchCar.load("getManufacturers", (carDesc, service) -> service.allManufacturers());
+        dispatchCar.load("getModels", (carDesc, service) -> service.findModels(carDesc));
+        dispatchCar.load("getBodyTypes", (carDesc, service) -> service.findBodyTypes(carDesc));
     }
 
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        resp.setContentType("text/html;charset=UTF-8");
         String action = req.getParameter("action");
-        Manufacturer manufacturer = parseJson(req.getParameter("manufacturer"), Manufacturer.class);
-        Model model = parseJson(req.getParameter("model"), Model.class);
+        ObjectMapper mapper = new ObjectMapper();
+        Manufacturer manufacturer = parseJson(
+                req.getParameter("manufacturer"), Manufacturer.class, mapper
+        );
+        Model model = parseJson(req.getParameter("model"), Model.class, mapper);
         CarDescription carDesc = new CarDescription(manufacturer, model);
-        Object collection = DISPATCH_CAR.execute(action, carDesc, SERVICE);
+        Object collection = dispatchCar.execute(action, carDesc, service);
         try (final PrintWriter writer = resp.getWriter()) {
-            MAPPER.writeValue(writer, collection);
+            mapper.writeValue(writer, collection);
         }
     }
 
-    private <T> T parseJson(String json, Class<T> clazz) throws JsonProcessingException {
+    private <T> T parseJson(String json, Class<T> clazz, ObjectMapper mapper) throws JsonProcessingException {
         if (Objects.isNull(json)) {
             return null;
         }
-        return MAPPER.readValue(json, clazz);
+        return mapper.readValue(json, clazz);
     }
 }

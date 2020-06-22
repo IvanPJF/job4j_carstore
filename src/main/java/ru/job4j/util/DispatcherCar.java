@@ -11,7 +11,8 @@ import java.util.function.BiFunction;
 
 public class DispatcherCar {
 
-    private static final Map<String, BiFunction<CarDescription, Service, Object>> ACTION_MAP = new HashMap<>();
+    private final Map<String, BiFunction<CarDescription, Service, Object>> actionsMap =
+            new HashMap<>();
     private static final DispatcherCar DISPATCH = new DispatcherCar();
 
     private DispatcherCar() {
@@ -22,11 +23,11 @@ public class DispatcherCar {
     }
 
     public void load(String action, BiFunction<CarDescription, Service, Object> func) {
-        ACTION_MAP.put(action, func);
+        actionsMap.put(action, func);
     }
 
     public Object execute(String action, CarDescription carDescription, Service service) {
-        BiFunction<CarDescription, Service, Object> func = ACTION_MAP.get(action);
+        BiFunction<CarDescription, Service, Object> func = actionsMap.get(action);
         if (Objects.isNull(func)) {
             throw new NoSuchElementException("No action found.");
         }

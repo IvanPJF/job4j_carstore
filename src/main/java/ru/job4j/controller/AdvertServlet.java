@@ -19,17 +19,16 @@ import java.util.*;
 
 public class AdvertServlet extends HttpServlet {
 
-    private static final Service SERVICE = ValidateService.getInstance();
+    private final Service service = ValidateService.getInstance();
 
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        resp.setContentType("text/html;charset=UTF-8");
         String action = req.getParameter("action");
         Collection<Advert> adverts = null;
         if ("getByAdvertiser".equals(action)) {
             Advertiser advertiser = (Advertiser) req.getSession().getAttribute("advertiser");
-            adverts = SERVICE.findAdvertsByAdvertiser(advertiser);
+            adverts = service.findAdvertsByAdvertiser(advertiser);
         } else {
-            adverts = SERVICE.allActiveAdverts();
+            adverts = service.allActiveAdverts();
         }
         try (final PrintWriter writer = resp.getWriter()) {
             new ObjectMapper().writeValue(writer, adverts);
@@ -38,10 +37,9 @@ public class AdvertServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        resp.setContentType("text/html;charset=UTF-8");
         String action = req.getParameter("action");
         if ("changeAdvertsStatus".equals(action)) {
-            if (SERVICE.changeAdvertsStatus(buildAdverts(req))) {
+            if (service.changeAdvertsStatus(buildAdverts(req))) {
                 return;
             }
             resp.sendError(500, "Statuses failed to change");

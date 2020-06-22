@@ -1,5 +1,6 @@
 package ru.job4j.controller;
 
+import ru.job4j.model.Advertiser;
 import ru.job4j.model.RegAdvertiser;
 import ru.job4j.service.Service;
 import ru.job4j.service.ValidateService;
@@ -14,24 +15,23 @@ import java.io.PrintWriter;
 
 public class SignInServlet extends HttpServlet {
 
-    private static final Service SERVICE = ValidateService.getInstance();
+    private final Service service = ValidateService.getInstance();
 
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        resp.setContentType("text/html;charset=UTF-8");
         req.getRequestDispatcher("/WEB-INF/html/signin.html").forward(req, resp);
     }
 
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        resp.setContentType("text/html;charset=UTF-8");
         String login = req.getParameter("login");
         String password = req.getParameter("password");
         try (final PrintWriter writer = resp.getWriter()) {
-            if (!SERVICE.isCredential(new RegAdvertiser(login, password))) {
+            if (!service.isCredential(new RegAdvertiser(login, password))) {
                 writer.print("incorrect");
                 return;
             }
             HttpSession session = req.getSession();
-            session.setAttribute("advertiser", SERVICE.findAdvertiserByLogin(new RegAdvertiser(login)));
+            Advertiser advertiser = service.findAdvertiserByLogin(new RegAdvertiser(login));
+            session.setAttribute("advertiser", advertiser);
         }
     }
 }

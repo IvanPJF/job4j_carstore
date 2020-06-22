@@ -3,6 +3,7 @@ package ru.job4j.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
+import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -34,7 +35,9 @@ public class Model implements Comparable<Model> {
     @JoinTable(
             name = "model_body_type",
             joinColumns = @JoinColumn(name = "model_id", nullable = false, updatable = false),
-            inverseJoinColumns = @JoinColumn(name = "body_type_id", nullable = false, updatable = false)
+            inverseJoinColumns = @JoinColumn(
+                    name = "body_type_id", nullable = false, updatable = false
+            )
     )
     private Set<BodyType> bodyTypes = new TreeSet<>();
 
@@ -73,5 +76,23 @@ public class Model implements Comparable<Model> {
 
     public void setBodyTypes(Set<BodyType> bodyTypes) {
         this.bodyTypes = bodyTypes;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Model model = (Model) o;
+        return Objects.equals(id, model.id)
+                && Objects.equals(name, model.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name);
     }
 }

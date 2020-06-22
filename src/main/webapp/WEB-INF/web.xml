@@ -20,6 +20,26 @@
         <filter-name>AjaxFilter</filter-name>
         <url-pattern>/ajax/*</url-pattern>
     </filter-mapping>
+    <filter>
+        <filter-name>ContentTypeFilter</filter-name>
+        <filter-class>ru.job4j.controller.ContentTypeFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>ContentTypeFilter</filter-name>
+        <url-pattern>*</url-pattern>
+    </filter-mapping>
+    <filter>
+        <filter-name>ImagesDirFilter</filter-name>
+        <filter-class>ru.job4j.controller.ImagesDirFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>ImagesDirFilter</filter-name>
+        <url-pattern>/auth/add-advert</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>ImagesDirFilter</filter-name>
+        <url-pattern>/images/file</url-pattern>
+    </filter-mapping>
 
     <context-param>
         <description>The name of the folder for storing images</description>
@@ -78,7 +98,6 @@
     <servlet>
         <servlet-name>LoadImageServlet</servlet-name>
         <servlet-class>ru.job4j.controller.LoadImageServlet</servlet-class>
-        <load-on-startup>1</load-on-startup>
     </servlet>
     <servlet-mapping>
         <servlet-name>LoadImageServlet</servlet-name>

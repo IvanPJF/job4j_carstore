@@ -12,7 +12,7 @@ import java.util.Objects;
 
 public class ValidateService implements Service {
 
-    private static final Store STORE = HiberStore.getInstance();
+    private final Store store = HiberStore.getInstance();
     private static final Service SERVICE = new ValidateService();
 
     private ValidateService() {
@@ -27,22 +27,22 @@ public class ValidateService implements Service {
         if (Objects.isNull(advert)) {
             return false;
         }
-        return STORE.addAdvert(advert);
+        return store.addAdvert(advert);
     }
 
     @Override
     public boolean addAdvertiser(RegAdvertiser regAdvertiser) {
-        return STORE.addAdvertiser(regAdvertiser);
+        return store.addAdvertiser(regAdvertiser);
     }
 
     @Override
     public Collection<Advert> allActiveAdverts() {
-        return STORE.allActiveAdverts();
+        return store.allActiveAdverts();
     }
 
     @Override
     public Collection<Manufacturer> allManufacturers() {
-        return STORE.allManufacturers();
+        return store.allManufacturers();
     }
 
     @Override
@@ -50,7 +50,7 @@ public class ValidateService implements Service {
         if (Objects.isNull(carDescription.getManufacturer())) {
             return List.of();
         }
-        return STORE.findModels(carDescription);
+        return store.findModels(carDescription);
     }
 
     @Override
@@ -58,22 +58,22 @@ public class ValidateService implements Service {
         if (Objects.isNull(carDescription.getModel())) {
             return List.of();
         }
-        return STORE.findBodyTypes(carDescription);
+        return store.findBodyTypes(carDescription);
     }
 
     @Override
     public Collection<Advert> findAdvertsByAdvertiser(Advertiser advertiser) {
-        return STORE.findAdvertsByAdvertiser(advertiser);
+        return store.findAdvertsByAdvertiser(advertiser);
     }
 
     @Override
     public Advertiser findAdvertiserByLogin(RegAdvertiser regAdvertiser) {
-        return STORE.findAdvertiserByLogin(regAdvertiser);
+        return store.findAdvertiserByLogin(regAdvertiser);
     }
 
     @Override
     public boolean isCredential(RegAdvertiser regAdvertiser) {
-        return STORE.isCredential(regAdvertiser);
+        return store.isCredential(regAdvertiser);
     }
 
     @Override
@@ -81,6 +81,6 @@ public class ValidateService implements Service {
         if (adverts.isEmpty()) {
             return false;
         }
-        return STORE.changeAdvertsStatus(adverts);
+        return store.changeAdvertsStatus(adverts);
     }
 }
