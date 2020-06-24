@@ -6,6 +6,7 @@ import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import ru.job4j.dto.CarDescription;
+import ru.job4j.dto.FilterAdvert;
 import ru.job4j.model.*;
 
 import java.util.*;
@@ -38,10 +39,20 @@ public class HiberStore implements Store {
     }
 
     @Override
-    public Collection<Advert> allActiveAdverts() {
-        return execute(session -> session
-                .createQuery("from Advert where status = true order by id desc", Advert.class)
-                .list());
+    public Collection<Advert> allActiveAdverts(FilterAdvert fltrAdvert) {
+        return execute(session -> {
+            String filterName = fltrAdvert.getName();
+            if (!filterName.isEmpty()) {
+                session.enableFilter(filterName);
+                if (fltrAdvert.isWithParameter()) {
+                    session.getEnabledFilter(filterName)
+                            .setParameter(fltrAdvert.getParamName(), fltrAdvert.getParamValue());
+                }
+            }
+            return session.createQuery(
+                    "from Advert where status = true order by id desc", Advert.class
+            ).list();
+        });
     }
 
     @Override

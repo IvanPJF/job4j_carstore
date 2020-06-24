@@ -16,7 +16,11 @@
     <script>
         $(function () {
             currentAdvertiser();
-            initAdverts();
+            initAdverts(createFilter());
+            fillManufacturerOptionsFilter();
+            $("#filters").change(function () {
+                initAdverts(createFilter());
+            });
         });
 
         function currentAdvertiser() {
@@ -34,10 +38,11 @@
             });
         }
 
-        function initAdverts() {
+        function initAdverts(filterAdvert) {
             $.ajax({
                 url: "ajax/advert",
-                type: "GET"
+                type: "GET",
+                data: {"filterAdvert": JSON.stringify(filterAdvert)}
             }).done(function (data) {
                 let adverts = JSON.parse(data);
                 $("#tbody").html(function () {
@@ -68,15 +73,52 @@
                 + `<tr><th scope="row">Price:</th><td>${advert.price}</td></tr>`
                 + `<tr><th scope="row">VIN:</th><td>${advert.vin}</td></tr>`
                 + `<tr><th scope="row">Mileage:</th><td>${advert.mileage}</td></tr>`
+                + `<tr><th scope="row">Manufacturer:</th><td>${advert.manufacturer.name}</td></tr>`
                 + `<tr><th scope="row">Model:</th><td>${advert.model.name}</td></tr>`
                 + `<tr><th scope="row">Body type:</th><td>${advert.bodyType.name}</td></tr>`
                 + `<tr><th scope="row">Advertiser:</th><td>${advert.advertiser.name}</td></tr>`
                 + `<tr><th scope="row">Phone:</th><td>${advert.advertiser.phone}</td></tr>`
+                + `<tr><th scope="row">Create date:</th><td>${new Date(advert.createDate).toDateString()}</td></tr>`
                 + `</table>`;
         }
 
         function toAddAdvert() {
             window.location.href = "auth/add-advert";
+        }
+
+        function createFilter() {
+            let filterValues = $("#filters").val().split(' ');
+            let filterAdvert = {
+                name: filterValues[0],
+                paramName: null,
+                paramValue: null
+            };
+            if (filterValues.length > 1) {
+                filterAdvert.paramName = filterValues[1];
+                filterAdvert.paramValue = Number(filterValues[2]);
+            }
+            return filterAdvert;
+        }
+
+        function fillManufacturerOptionsFilter() {
+            $.ajax({
+                url: "ajax/car-description",
+                type: "GET",
+                data: {
+                    "action": "getManufacturers"
+                }
+            }).done(function (data) {
+                fillOptionsManufacturerFilter(JSON.parse(data));
+            });
+        }
+
+        function fillOptionsManufacturerFilter(data) {
+            let nameFilter = "byCarManufacturer";
+            let nameParam = "manufacturer_id";
+            let optionsGroup = $("#manufacturerGroup");
+            for (let element of data) {
+                optionsGroup.append(`<option value="${nameFilter} ${nameParam} ${element.id}">${element.name}</option>`);
+            }
         }
     </script>
 
@@ -87,6 +129,21 @@
         <div class="col text-right" id="currAdvertiser"></div>
     </div>
     <div class="row justify-content-end pt-3">
+        <div class="col-3 text-left">
+            <form>
+                <div class="form-group row">
+                    <label for="filters" class="col-auto col-form-label"><b>Filters:</b></label>
+                    <div class="col-auto">
+                        <select id="filters" class="form-control" title="filters">
+                            <option value="">Show all</option>
+                            <option value="lastDay">Last day</option>
+                            <option value="withPhoto">With photo</option>
+                            <optgroup label="Manufacturer" id="manufacturerGroup"></optgroup>
+                        </select>
+                    </div>
+                </div>
+            </form>
+        </div>
         <div class="col text-right">
             <button class="btn btn-success" onclick="toAddAdvert();">Add new advert</button>
         </div>

@@ -1,10 +1,29 @@
 package ru.job4j.model;
 
+import org.hibernate.annotations.*;
+
 import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import java.util.Date;
 import java.util.Objects;
 
 @Entity
 @Table(name = "advert")
+@FilterDefs({
+        @FilterDef(name = "lastDay", defaultCondition = "create_date >= 'today'"),
+        @FilterDef(name = "withPhoto", defaultCondition = "photo_name is not null"),
+        @FilterDef(
+                name = "byCarManufacturer",
+                parameters = @ParamDef(name = "manufacturer_id", type = "int")
+        )
+})
+@Filters({
+        @Filter(name = "lastDay"),
+        @Filter(name = "withPhoto"),
+        @Filter(name = "byCarManufacturer", condition = "manufacturer_id = :manufacturer_id")
+})
 public class Advert implements Comparable<Advert> {
 
     @Id
@@ -24,8 +43,11 @@ public class Advert implements Comparable<Advert> {
     @Column(name = "price", nullable = false)
     private Long price;
 
-    @Column(name = "status", nullable = false)
+    @Column(name = "status", nullable = false, insertable = false)
     private Boolean status;
+
+    @Column(name = "create_date", insertable = false)
+    private Date createDate;
 
     @ManyToOne(cascade = {CascadeType.REFRESH}, fetch = FetchType.EAGER)
     @JoinColumn(
@@ -46,6 +68,22 @@ public class Advert implements Comparable<Advert> {
     @ManyToOne(cascade = {CascadeType.REFRESH}, fetch = FetchType.EAGER)
     @JoinColumn(name = "advertiser_id", nullable = false, updatable = false)
     private Advertiser advertiser;
+
+    @ManyToOne(cascade = {CascadeType.REFRESH}, fetch = FetchType.EAGER)
+    @JoinColumn(
+            name = "manufacturer_id",
+            nullable = false,
+            updatable = false
+    )
+    private Manufacturer manufacturer;
+
+    public Manufacturer getManufacturer() {
+        return manufacturer;
+    }
+
+    public void setManufacturer(Manufacturer manufacturer) {
+        this.manufacturer = manufacturer;
+    }
 
     @Override
     public int compareTo(Advert o) {
@@ -98,6 +136,14 @@ public class Advert implements Comparable<Advert> {
 
     public void setStatus(Boolean status) {
         this.status = status;
+    }
+
+    public Date getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(Date createDate) {
+        this.createDate = createDate;
     }
 
     public Advertiser getAdvertiser() {

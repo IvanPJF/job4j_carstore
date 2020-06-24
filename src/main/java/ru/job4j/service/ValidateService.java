@@ -1,6 +1,7 @@
 package ru.job4j.service;
 
 import ru.job4j.dto.CarDescription;
+import ru.job4j.dto.FilterAdvert;
 import ru.job4j.model.*;
 import ru.job4j.persistence.HiberStore;
 import ru.job4j.persistence.Store;
@@ -36,8 +37,8 @@ public class ValidateService implements Service {
     }
 
     @Override
-    public Collection<Advert> allActiveAdverts() {
-        return store.allActiveAdverts();
+    public Collection<Advert> allActiveAdverts(FilterAdvert filterAdvert) {
+        return store.allActiveAdverts(filterAdvert);
     }
 
     @Override

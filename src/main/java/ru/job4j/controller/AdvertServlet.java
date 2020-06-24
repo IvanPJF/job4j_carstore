@@ -3,6 +3,7 @@ package ru.job4j.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import ru.job4j.dto.FilterAdvert;
 import ru.job4j.model.Advert;
 import ru.job4j.model.Advertiser;
 import ru.job4j.service.Service;
@@ -23,15 +24,18 @@ public class AdvertServlet extends HttpServlet {
 
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String action = req.getParameter("action");
+        String filterJson = req.getParameter("filterAdvert");
         Collection<Advert> adverts = null;
+        ObjectMapper mapper = new ObjectMapper();
         if ("getByAdvertiser".equals(action)) {
             Advertiser advertiser = (Advertiser) req.getSession().getAttribute("advertiser");
             adverts = service.findAdvertsByAdvertiser(advertiser);
         } else {
-            adverts = service.allActiveAdverts();
+            FilterAdvert filterAdvert = mapper.readValue(filterJson, FilterAdvert.class);
+            adverts = service.allActiveAdverts(filterAdvert);
         }
         try (final PrintWriter writer = resp.getWriter()) {
-            new ObjectMapper().writeValue(writer, adverts);
+            mapper.writeValue(writer, adverts);
         }
     }
 

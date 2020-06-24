@@ -50,19 +50,22 @@ CREATE TABLE IF NOT EXISTS model_body_type
 
 CREATE TABLE IF NOT EXISTS advert
 (
-    id            SERIAL,
-    vin           VARCHAR(20) NOT NULL UNIQUE,
-    mileage       INTEGER     NOT NULL,
-    photo_name    VARCHAR(100) UNIQUE,
-    price         BIGINT      NOT NULL,
-    status        BOOLEAN DEFAULT true,
-    model_id      INTEGER     NOT NULL,
-    body_type_id  INTEGER     NOT NULL,
-    advertiser_id INTEGER     NOT NULL,
+    id              SERIAL,
+    vin             VARCHAR(20) NOT NULL UNIQUE,
+    mileage         INTEGER     NOT NULL,
+    photo_name      VARCHAR(100) UNIQUE,
+    price           BIGINT      NOT NULL,
+    status          BOOLEAN     NOT NULL DEFAULT true,
+    create_date     TIMESTAMP   NOT NULL DEFAULT current_timestamp,
+    model_id        INTEGER     NOT NULL,
+    body_type_id    INTEGER     NOT NULL,
+    advertiser_id   INTEGER     NOT NULL,
+    manufacturer_id INTEGER     NOT NULL,
     PRIMARY KEY (id),
     FOREIGN KEY (model_id) REFERENCES model (id),
     FOREIGN KEY (body_type_id) REFERENCES body_type (id),
-    FOREIGN KEY (advertiser_id) REFERENCES advertiser (id)
+    FOREIGN KEY (advertiser_id) REFERENCES advertiser (id),
+    FOREIGN KEY (manufacturer_id) REFERENCES manufacturer (id)
 );
 
 INSERT INTO manufacturer (name)
