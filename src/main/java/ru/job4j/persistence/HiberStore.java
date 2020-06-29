@@ -42,7 +42,7 @@ public class HiberStore implements Store {
     public Collection<Advert> allActiveAdverts(FilterAdvert fltrAdvert) {
         return execute(session -> {
             String filterName = fltrAdvert.getName();
-            if (!filterName.isEmpty()) {
+            if (Objects.nonNull(filterName) && !filterName.isEmpty()) {
                 session.enableFilter(filterName);
                 if (fltrAdvert.isWithParameter()) {
                     session.getEnabledFilter(filterName)

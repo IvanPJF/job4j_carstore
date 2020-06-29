@@ -11,21 +11,13 @@
 
     <profiles>
         <profile>
-            <id>test</id>
-            <properties>
-                <db.driver>org.postgresql.Driver</db.driver>
-                <db.url>jdbc:postgresql://127.0.0.1:5432/carstore</db.url>
-                <db.username>postgres</db.username>
-                <db.password>postgrespass</db.password>
-            </properties>
-        </profile>
-        <profile>
             <id>production</id>
             <properties>
                 <db.driver>org.postgresql.Driver</db.driver>
                 <db.url>jdbc:postgresql://127.0.0.1:5432/carstore</db.url>
                 <db.username>postgres</db.username>
                 <db.password>postgrespass</db.password>
+                <db.skip>false</db.skip>
             </properties>
         </profile>
         <profile>
@@ -34,10 +26,11 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <properties>
-                <db.driver>org.postgresql.Driver</db.driver>
-                <db.url>jdbc:postgresql://localhost/carstore</db.url>
-                <db.username>postgres</db.username>
-                <db.password></db.password>
+                <db.driver/>
+                <db.url/>
+                <db.username/>
+                <db.password/>
+                <db.skip>true</db.skip>
             </properties>
         </profile>
     </profiles>
@@ -100,6 +93,7 @@
                     <driver>${db.driver}</driver>
                     <username>${db.username}</username>
                     <password>${db.password}</password>
+                    <skip>${db.skip}</skip>
                 </configuration>
                 <executions>
                     <execution>
@@ -161,6 +155,12 @@
             <groupId>commons-fileupload</groupId>
             <artifactId>commons-fileupload</artifactId>
             <version>1.4</version>
+        </dependency>
+        <dependency>
+            <groupId>org.hsqldb</groupId>
+            <artifactId>hsqldb</artifactId>
+            <version>2.5.0</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 </project>

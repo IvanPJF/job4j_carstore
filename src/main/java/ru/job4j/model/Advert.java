@@ -43,10 +43,12 @@ public class Advert implements Comparable<Advert> {
     @Column(name = "price", nullable = false)
     private Long price;
 
-    @Column(name = "status", nullable = false, insertable = false)
+    @Column(name = "status", insertable = false)
+    @ColumnDefault(value = "true")
     private Boolean status;
 
     @Column(name = "create_date", insertable = false)
+    @ColumnDefault(value = "current_timestamp")
     private Date createDate;
 
     @ManyToOne(cascade = {CascadeType.REFRESH}, fetch = FetchType.EAGER)
